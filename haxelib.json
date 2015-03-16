@@ -1,0 +1,11 @@
+{
+	"name": "layout",
+	"url": "http://www.github.com/player-03/layout",
+	"license": "MIT",
+	"tags": [],
+	"description": "A combination of jgranick/layout and player-03/relative-layout.",
+	"version": "0.1",
+	"releasenote": "",
+	"contributors": [ "player_03", "singmajesty" ],
+	"dependencies": {}
+}
