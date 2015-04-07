@@ -41,32 +41,16 @@ class Size implements LayoutItem {
 	
 	/**
 	 * Sets the target's width to the area's width, minus the given amount.
-	 * The amount will be scaled based on GlobalScale.
 	 */
 	public static inline function widthMinus(amount:Float):Size {
 		return new MarginSize(true, amount);
 	}
 	/**
 	 * Sets the target's height to the area's height, minus the given
-	 * amount. The amount will be scaled based on GlobalScale.
+	 * amount.
 	 */
 	public static inline function heightMinus(amount:Float):Size {
 		return new MarginSize(false, amount);
-	}
-	
-	/**
-	 * Sets the target's width to the area's width, minus the given amount.
-	 * The amount will NOT be scaled based on GlobalScale.
-	 */
-	public static inline function widthMinusExact(amount:Float):Size {
-		return new ExactMarginSize(true, amount);
-	}
-	/**
-	 * Sets the target's height to the area's height, minus the given
-	 * amount. The amount will NOT be scaled based on GlobalScale.
-	 */
-	public static inline function heightMinusExact(amount:Float):Size {
-		return new ExactMarginSize(false, amount);
 	}
 	
 	/**

@@ -10,6 +10,7 @@ import flash.events.EventDispatcher;
  * When the area changes for any reason, it will dispatch a CHANGE event.
  * @author Joseph Cloutier
  */
+@:allow(layout.Scale)
 class Area extends EventDispatcher {
 	#if flash
 		public var x(default, set):Float;

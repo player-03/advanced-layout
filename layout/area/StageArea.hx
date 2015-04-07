@@ -10,6 +10,7 @@ import flash.Lib;
  * instantiating it yourself.
  * @author Joseph Cloutier
  */
+@:allow(layout.Layout)
 class StageArea extends Area {
 	public static var instance(get, null):StageArea;
 	private static function get_instance():StageArea {
@@ -20,15 +21,13 @@ class StageArea extends Area {
 	}
 	
 	private function new() {
-		var stage:Stage = Lib.current.stage;
-		
 		super();
 		
-		stage.addEventListener(Event.RESIZE, onStageResize, false, 1);
+		Lib.current.stage.addEventListener(Event.RESIZE, onStageResize, false, 1);
 		onStageResize(null);
 	}
 	
-	public function onStageResize(?e:Event):Void {
+	private function onStageResize(?e:Event):Void {
 		var stage:Stage = Lib.current.stage;
 		
 		super.setTo(0, 0, stage.stageWidth, stage.stageHeight);

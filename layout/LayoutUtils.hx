@@ -1,20 +1,22 @@
 package layout;
 
-import layout.item.LayoutItem.LayoutMask;
+import layout.item.LayoutItem;
 import layout.item.Position;
 import layout.item.Size;
 import flash.display.DisplayObject;
 
 /**
- * Functions for creating a layout from scratch. If you've already
- * arranged everything onscreen and want to keep them in place as the
- * stage is resized, see StaticLayout instead.
+ * Functions for setting up your layout. This class is designed to be
+ * used as a static extension.
+ * 
+ * If you are familiar with the original Layout library, you may prefer
+ * to use PremadeLayoutUtils.
  * @author Joseph Cloutier
  */
-class DynamicLayout {
+class LayoutUtils {
 	private static inline function check(layout:Layout):Layout {
 		if(layout == null) {
-			return Layout.defaultLayout;
+			return Layout.currentLayout;
 		} else {
 			return layout;
 		}
@@ -160,6 +162,34 @@ class DynamicLayout {
 		check(layout).add(objectToPlace, Position.edge(DOWN));
 	}
 	
+	//Simple scaling options
+	//======================
+	
+	/**
+	 * The object will be scaled based on the current scale values. This
+	 * assumes that the object is already at a reasonable default size.
+	 */
+	public static inline function simpleScale(objectToScale:DisplayObject, ?layout:Layout):Void {
+		simpleWidth(objectToScale, layout);
+		simpleHeight(objectToScale, layout);
+	}
+	/**
+	 * Sets the object's width to this value times Scale.scaleX. If the
+	 * width isn't specified, the object's initial width will be used.
+	 */
+	public static inline function simpleWidth(objectToScale:DisplayObject, ?width:Float, ?layout:Layout):Void {
+		check(layout).add(objectToScale, Size.simpleWidth(
+			width != null ? width : objectToScale.width));
+	}
+	/**
+	 * Sets the object's height to this value times Scale.scaleY. If the
+	 * height isn't specified, the object's initial height will be used.
+	 */
+	public static inline function simpleHeight(objectToScale:DisplayObject, ?height:Float, ?layout:Layout):Void {
+		check(layout).add(objectToScale, Size.simpleHeight(
+			height != null ? height : objectToScale.height));
+	}
+	
 	//Scale objects relative to one another
 	//=====================================
 	
@@ -182,19 +212,6 @@ class DynamicLayout {
 	
 	//Scale objects relative to the stage
 	//===================================
-	
-	/**
-	 * Sets the object's width to this value times Scale.scaleX.
-	 */
-	public static inline function setWidth(objectToScale:DisplayObject, width:Float, ?layout:Layout):Void {
-		check(layout).add(objectToScale, Size.simpleWidth(width));
-	}
-	/**
-	 * Sets the object's height to this value times Scale.scaleY.
-	 */
-	public static inline function setHeight(objectToScale:DisplayObject, height:Float, ?layout:Layout):Void {
-		check(layout).add(objectToScale, Size.simpleHeight(height));
-	}
 	
 	/**
 	 * Sets the object's width to fill the stage horizintally, minus the

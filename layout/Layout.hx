@@ -16,13 +16,18 @@ class Layout {
 	public static var stageLayout(get, null):Layout;
 	private static function get_stageLayout():Layout {
 		if(stageLayout == null) {
-			stageLayout = new Layout(stageScale);
+			stageLayout = new Layout(new Scale());
+			stageScale = stageLayout.scale;
 		}
 		return stageLayout;
 	}
 	
-	private static var stageScale:Scale = new Scale();
+	private static var stageScale:Scale;
 	public static function setStageBaseDimensions(width:Int, height:Int):Void {
+		if(stageScale == null) {
+			get_stageLayout();
+		}
+		
 		stageScale.baseStageWidth = width;
 		stageScale.baseStageHeight = height;
 		stageScale.onResize();
@@ -34,15 +39,16 @@ class Layout {
 	 * if you don't specify one. You may update this at any time. Setting
 	 * this to null will make it default to stageLayout.
 	 */
-	@:isVar public static var defaultLayout(get, set):Layout;
-	private static function get_defaultLayout():Layout {
-		if(defaultLayout == null) {
-			defaultLayout = Layout.stageLayout;
+	@:isVar public static var currentLayout(get, set):Layout;
+	private static function get_currentLayout():Layout {
+		if(currentLayout == null) {
+			currentLayout = Layout.stageLayout;
 		}
-		return defaultLayout;
+		return currentLayout;
 	}
-	private static inline function set_defaultLayout(value:Layout):Layout {
-		return defaultLayout = value;
+	private static inline function set_currentLayout(value:Layout):Layout {
+		//I'd prefer to use (get, default), but that's not allowed.
+		return currentLayout = value;
 	}
 	
 	public var scale(default, null):Scale;
