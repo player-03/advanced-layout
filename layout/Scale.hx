@@ -125,10 +125,11 @@ class Scale {
 		behavior = new NoBorderScale();
 	}
 	
-	#if (openfl && !flash)
+	#if (openfl && !flash && !html5)
 		/**
 		 * Scale based on the screen's DPI. This requires OpenFL and
-		 * doesn't work in Flash.
+		 * doesn't work in Flash or HTML5. Use something else in that
+		 * case.
 		 * @param	baseDPI The pixels per inch of the device you're
 		 * testing on. The default is 160 because that's what Android
 		 * considers to be "medium" density.

@@ -4,7 +4,7 @@
 	"license": "MIT",
 	"tags": [],
 	"description": "A combination of jgranick/layout and player-03/relative-layout.",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"releasenote": "",
 	"contributors": [ "player_03", "singmajesty" ],
 	"dependencies": {}
