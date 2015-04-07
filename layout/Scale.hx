@@ -19,8 +19,6 @@ import openfl.system.Capabilities;
  * Each Layout can have its own Scale, but by default a Scale is shared
  * between nested layouts.
  * 
- * The primary Scale is Layout.stageLayout.scale.
- * 
  * For instance, you might want an object to be 100x100 pixels on an
  * 800x600 stage. But on a 5120x2880 stage, that wouldn't be enough, so
  * this class will tell you how much to scale it up.
@@ -48,6 +46,11 @@ import openfl.system.Capabilities;
 @:allow(layout.ScaleBehavior)
 @:allow(layout.Layout)
 class Scale {
+	public static var stageScale(get, never):Scale;
+	private static inline function get_stageScale():Scale {
+		return Layout.stageLayout.scale;
+	}
+	
 	public var x(default, null):Float = 1;
 	public var y(default, null):Float = 1;
 	
@@ -124,12 +127,14 @@ class Scale {
 	
 	#if (openfl && !flash)
 		/**
-		 * Scale based on the screen's PPI. This requires OpenFL and
+		 * Scale based on the screen's DPI. This requires OpenFL and
 		 * doesn't work in Flash.
-		 * @param	basePPI The PPI of the device you're testing on.
+		 * @param	baseDPI The pixels per inch of the device you're
+		 * testing on. The default is 160 because that's what Android
+		 * considers to be "medium" density.
 		 */
-		public function screenPPI(?basePPI:Int = 72):Void {
-			behavior = new PPIScale(basePPI);
+		public function screenDPI(?baseDPI:Int = 160):Void {
+			behavior = new DPIScale(baseDPI);
 			area.dispatchEvent(new Event(Event.CHANGE));
 		}
 	#end
@@ -225,17 +230,17 @@ class NoBorderScale extends ScaleBehavior {
 }
 
 #if (openfl && !flash)
-class PPIScale extends ScaleBehavior {
-	private var basePPI:Float;
+class DPIScale extends ScaleBehavior {
+	private var baseDPI:Float;
 	
-	public function new(basePPI:Float) {
+	public function new(baseDPI:Float) {
 		super();
 		
-		this.basePPI = basePPI;
+		this.baseDPI = baseDPI;
 	}
 	
 	public override function onResize(stageWidth:Int, stageHeight:Int, scale:Scale):Void {
-		scale.x = Capabilities.screenDPI / basePPI;
+		scale.x = Capabilities.screenDPI / baseDPI;
 		scale.y = scale.x;
 	}
 }
