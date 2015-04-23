@@ -12,24 +12,17 @@ import flash.events.EventDispatcher;
  */
 @:allow(layout.Scale)
 class Area extends EventDispatcher {
-	#if flash
-		public var x(default, set):Float;
-		public var y(default, set):Float;
-		public var width(default, set):Float;
-		public var height(default, set):Float;
-	#else
-		@:isVar public var x(get, set):Float;
-		@:isVar public var y(get, set):Float;
-		@:isVar public var width(get, set):Float;
-		@:isVar public var height(get, set):Float;
-	#end
+	public var x(default, set):Float;
+	public var y(default, set):Float;
+	public var width(default, set):Float;
+	public var height(default, set):Float;
 	
 	public var centerX(get, never):Float;
 	public var centerY(get, never):Float;
-	public var left(get, never):Float;
-	public var right(get, never):Float;
-	public var top(get, never):Float;
-	public var bottom(get, never):Float;
+	public var left(get, set):Float;
+	public var right(get, set):Float;
+	public var top(get, set):Float;
+	public var bottom(get, set):Float;
 	
 	public function new(x:Float = 0, y:Float = 0, width:Float = 0, height:Float = 0) {
 		super();
@@ -49,21 +42,6 @@ class Area extends EventDispatcher {
 		
 		dispatchEvent(new Event(Event.CHANGE));
 	}
-	
-	#if !flash
-		private inline function get_x():Float {
-			return x;
-		}
-		private inline function get_y():Float {
-			return y;
-		}
-		private inline function get_width():Float {
-			return width;
-		}
-		private inline function get_height():Float {
-			return height;
-		}
-	#end
 	
 	private function set_x(value:Float):Float {
 		x = value;
@@ -89,19 +67,40 @@ class Area extends EventDispatcher {
 	private inline function get_left():Float {
 		return x;
 	}
+	private inline function set_left(value:Float):Float {
+		setTo(value, y, width - (value - x), height);
+		return value;
+	}
 	private inline function get_right():Float {
 		return x + width;
+	}
+	private inline function set_right(value:Float):Float {
+		width = value - x;
+		return value;
 	}
 	private inline function get_top():Float {
 		return y;
 	}
+	private inline function set_top(value:Float):Float {
+		setTo(x, value, width, height - (value - y));
+		return value;
+	}
 	private inline function get_bottom():Float {
 		return y + height;
 	}
+	private inline function set_bottom(value:Float):Float {
+		height = value - y;
+		return value;
+	}
+	
 	private inline function get_centerX():Float {
 		return x + width / 2;
 	}
 	private inline function get_centerY():Float {
 		return y + height / 2;
+	}
+	
+	public inline function clone():Area {
+		return new Area(x, y, width, height);
 	}
 }

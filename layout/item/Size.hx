@@ -1,8 +1,7 @@
 package layout.item;
 
-import layout.area.IRectangle;
 import layout.item.LayoutItem.LayoutMask;
-import flash.display.DisplayObject;
+import layout.Resizable;
 
 /**
  * Each Size value represents size along only one axis. You will have to use
@@ -13,14 +12,14 @@ class Size implements LayoutItem {
 	/**
 	 * Set the target's width ignoring everything except the overall Scale.
 	 */
-	public static inline function simpleWidth(width:Float):Size {
-		return new BasicSize(true, width);
+	public static inline function simpleWidth():Size {
+		return new Size(true);
 	}
 	/**
 	 * Set the target's height ignoring everything except the overall Scale.
 	 */
-	public static inline function simpleHeight(height:Float):Size {
-		return new BasicSize(false, height);
+	public static inline function simpleHeight():Size {
+		return new Size(false);
 	}
 	
 	/**
@@ -72,29 +71,22 @@ class Size implements LayoutItem {
 		mask = horizontal ? LayoutMask.AFFECTS_WIDTH : LayoutMask.AFFECTS_HEIGHT;
 	}
 	
-	public function apply(target:DisplayObject, area:IRectangle, scale:Scale):Void {
+	public function apply(target:Resizable, area:Resizable, scale:Scale):Void {
 		if(horizontal) {
-			target.width = getSize(target.width / target.scaleX, area.width, scale.x);
+			var width:Float = getSize(target.baseWidth, area.width, scale.x);
+			if(width != target.width) {
+				target.width = width;
+			}
 		} else {
-			target.height = getSize(target.height / target.scaleY, area.height, scale.y);
+			var height:Float = getSize(target.baseHeight, area.height, scale.y);
+			if(height != target.height) {
+				target.height = height;
+			}
 		}
 	}
 	
 	private function getSize(targetSize:Float, areaSize:Float, scale:Float):Float {
 		return targetSize * scale;
-	}
-}
-
-private class BasicSize extends Size {
-	private var size:Float;
-	
-	public function new(horizontal:Bool, size:Float) {
-		super(horizontal);
-		this.size = size;
-	}
-	
-	private override function getSize(targetSize:Float, areaSize:Float, scale:Float):Float {
-		return size * scale;
 	}
 }
 
@@ -162,7 +154,7 @@ private class AspectRatio extends Size {
 		super(horizontal);
 	}
 	
-	public override function apply(target:DisplayObject, area:IRectangle, scale:Scale):Void {
+	public override function apply(target:Resizable, area:Resizable, scale:Scale):Void {
 		if(horizontal) {
 			target.scaleX = target.scaleY;
 		} else {

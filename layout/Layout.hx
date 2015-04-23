@@ -1,13 +1,13 @@
 package layout;
 
-import flash.display.DisplayObject;
 import flash.events.Event;
 import flash.Vector;
 import layout.area.Area;
-import layout.area.BoundedArea;
-import layout.area.IRectangle;
 import layout.area.StageArea;
 import layout.item.LayoutItem;
+import layout.Resizable;
+
+using layout.LayoutUtils;
 
 /**
  * @author Joseph Cloutier
@@ -98,14 +98,25 @@ class Layout {
 	 * Creates a new layout object within this one that's bounded in the
 	 * given directions by the given objects.
 	 */
-	public function partition(?leftEdge:DisplayObject, ?rightEdge:DisplayObject,
-					?topEdge:DisplayObject, ?bottomEdge:DisplayObject):Layout {
-		var subArea:BoundedArea = new BoundedArea(bounds,
-							leftEdge, rightEdge, topEdge, bottomEdge);
-		//A BoundedArea serves as its own LayoutInstruction.
-		add(null, subArea);
+	public function partition(?leftEdge:Resizable, ?rightEdge:Resizable,
+					?topEdge:Resizable, ?bottomEdge:Resizable):Layout {
+		var subArea:Area = bounds.clone();
+		if(leftEdge != null) {
+			subArea.rightOfWithResizing(leftEdge);
+		}
+		if(rightEdge != null) {
+			subArea.leftOfWithResizing(rightEdge);
+		}
+		if(topEdge != null) {
+			subArea.belowWithResizing(topEdge);
+		}
+		if(bottomEdge != null) {
+			subArea.aboveWithResizing(bottomEdge);
+		}
 		
-		return new Layout(scale, subArea);
+		return new Layout(
+			new Scale(Math.round(subArea.width), Math.round(subArea.height), subArea),
+			subArea);
 	}
 	
 	/**
@@ -115,9 +126,9 @@ class Layout {
 	 * 
 	 * This clears any conflicting items.
 	 */
-	public function add(target:DisplayObject,
+	public function add(target:Resizable,
 						item:LayoutItem,
-						?base:DisplayObject):Void {
+						?base:Resizable):Void {
 		var i:Int = items.length - 1;
 		while(i >= 0) {
 			if(items[i].target == target
@@ -137,9 +148,9 @@ class Layout {
 		boundItem.item.apply(boundItem.target, boundItem.area, scale);
 	}
 	
-	public inline function addMultiple(target:DisplayObject,
+	public inline function addMultiple(target:Resizable,
 						items:Array<LayoutItem>,
-						?base:DisplayObject) {
+						?base:Resizable) {
 		for(item in items) {
 			add(target, item, base);
 		}
@@ -149,7 +160,7 @@ class Layout {
 	 * Finds the InstructionMask values currently associated with the
 	 * given object.
 	 */
-	public function getMask(target:DisplayObject):Int {
+	public function getMask(target:Resizable):Int {
 		var mask:Int = 0;
 		for(item in items) {
 			if(item.target == target) {
@@ -164,11 +175,11 @@ class Layout {
  * It's like bind(), except for a class.
  */
 private class BoundItem {
-	public var target:DisplayObject;
-	public var area:IRectangle;
+	public var target:Resizable;
+	public var area:Resizable;
 	public var item:LayoutItem;
 	
-	public function new(target:DisplayObject, area:IRectangle, item:LayoutItem) {
+	public function new(target:Resizable, area:Resizable, item:LayoutItem) {
 		this.target = target;
 		this.area = area;
 		this.item = item;

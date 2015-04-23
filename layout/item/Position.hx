@@ -1,8 +1,8 @@
 package layout.item;
 
-import layout.area.IRectangle;
 import layout.Direction;
 import layout.item.LayoutItem.LayoutMask;
+import layout.Resizable;
 import layout.Scale;
 import flash.display.DisplayObject;
 
@@ -76,11 +76,17 @@ class Position implements LayoutItem {
 		mask = horizontal ? LayoutMask.AFFECTS_X : LayoutMask.AFFECTS_Y;
 	}
 	
-	public function apply(target:DisplayObject, area:IRectangle, scale:Scale):Void {
+	public function apply(target:Resizable, area:Resizable, scale:Scale):Void {
 		if(horizontal) {
-			target.x = getCoordinate(area.x, area.width, target.width, scale.x);
+			var x:Float = getCoordinate(area.x, area.width, target.width, scale.x);
+			if(x != target.x) {
+				target.x = x;
+			}
 		} else {
-			target.y = getCoordinate(area.y, area.height, target.height, scale.y);
+			var y:Float = getCoordinate(area.y, area.height, target.height, scale.y);
+			if(y != target.y) {
+				target.y = y;
+			}
 		}
 	}
 	
