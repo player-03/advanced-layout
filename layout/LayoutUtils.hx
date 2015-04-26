@@ -175,31 +175,97 @@ class LayoutUtils {
 	public static inline function centerY(objectToPlace:Resizable, ?layout:Layout):Void {
 		check(layout).add(objectToPlace, Position.centerY());
 	}
+	/**
+	 * Centers the object onscreen.
+	 */
+	public static inline function center(objectToPlace:Resizable, ?layout:Layout):Void {
+		centerX(objectToPlace, layout);
+		centerY(objectToPlace, layout);
+	}
 	
 	/**
 	 * Aligns the object to the left edge of the screen.
 	 */
-	public static inline function alignLeft(objectToPlace:Resizable, ?layout:Layout):Void {
-		check(layout).add(objectToPlace, Position.edge(LEFT));
+	public static inline function alignLeft(objectToPlace:Resizable, ?margin:Float, ?layout:Layout):Void {
+		check(layout).add(objectToPlace, margin == null ? Position.edge(LEFT) : Position.inside(margin, LEFT));
 	}
 	/**
 	 * Aligns the object to the right edge of the screen.
 	 */
-	public static inline function alignRight(objectToPlace:Resizable, ?layout:Layout):Void {
-		check(layout).add(objectToPlace, Position.edge(RIGHT));
+	public static inline function alignRight(objectToPlace:Resizable, ?margin:Float, ?layout:Layout):Void {
+		check(layout).add(objectToPlace, margin == null ? Position.edge(RIGHT) : Position.inside(margin, RIGHT));
 	}
 	/**
 	 * Aligns the object to the top edge of the screen.
 	 */
-	public static inline function alignTop(objectToPlace:Resizable, ?layout:Layout):Void {
-		check(layout).add(objectToPlace, Position.edge(UP));
+	public static inline function alignTop(objectToPlace:Resizable, ?margin:Float, ?layout:Layout):Void {
+		check(layout).add(objectToPlace, margin == null ? Position.edge(UP) : Position.inside(margin, UP));
 	}
 	/**
 	 * Aligns the object to the bottom edge of the screen.
 	 */
-	public static inline function alignBottom(objectToPlace:Resizable, ?layout:Layout):Void {
-		check(layout).add(objectToPlace, Position.edge(DOWN));
+	public static inline function alignBottom(objectToPlace:Resizable, ?margin:Float, ?layout:Layout):Void {
+		check(layout).add(objectToPlace, margin == null ? Position.edge(DOWN) : Position.inside(margin, DOWN));
 	}
+	
+	/**
+	 * Aligns the object to the top-left corner of the screen.
+	 */
+	public static inline function alignTopLeft(objectToPlace:Resizable, ?margin:Float, ?layout:Layout):Void {
+		alignLeft(objectToPlace, margin, layout);
+		alignTop(objectToPlace, margin, layout);
+	}
+	/**
+	 * Aligns the object to the top-right corner of the screen.
+	 */
+	public static inline function alignTopRight(objectToPlace:Resizable, ?margin:Float, ?layout:Layout):Void {
+		alignRight(objectToPlace, margin, layout);
+		alignTop(objectToPlace, margin, layout);
+	}
+	/**
+	 * Aligns the object to the bottom-left corner of the screen.
+	 */
+	public static inline function alignBottomLeft(objectToPlace:Resizable, ?margin:Float, ?layout:Layout):Void {
+		alignLeft(objectToPlace, margin, layout);
+		alignBottom(objectToPlace, margin, layout);
+	}
+	/**
+	 * Aligns the object to the bottom-right corner of the screen.
+	 */
+	public static inline function alignBottomRight(objectToPlace:Resizable, ?margin:Float, ?layout:Layout):Void {
+		alignRight(objectToPlace, margin, layout);
+		alignBottom(objectToPlace, margin, layout);
+	}
+	
+	/**
+	 * Centers the object along the left edge of the screen.
+	 */
+	public static inline function alignLeftCenter(objectToPlace:Resizable, ?margin:Float, ?layout:Layout):Void {
+		alignLeft(objectToPlace, margin, layout);
+		centerY(objectToPlace, layout);
+	}
+	/**
+	 * Centers the object along the right edge of the screen.
+	 */
+	public static inline function alignRightCenter(objectToPlace:Resizable, ?margin:Float, ?layout:Layout):Void {
+		alignRight(objectToPlace, margin, layout);
+		centerY(objectToPlace, layout);
+	}
+	/**
+	 * Centers the object along the top of the screen.
+	 */
+	public static inline function alignTopCenter(objectToPlace:Resizable, ?margin:Float, ?layout:Layout):Void {
+		centerX(objectToPlace, layout);
+		alignTop(objectToPlace, margin, layout);
+	}
+	/**
+	 * Centers the object along the bottom of the screen.
+	 */
+	public static inline function alignBottomCenter(objectToPlace:Resizable, ?margin:Float, ?layout:Layout):Void {
+		centerX(objectToPlace, layout);
+		alignBottom(objectToPlace, margin, layout);
+	}
+	
 	
 	/**
 	 * Set's the object's x coordinate so that it's the given percent of
@@ -293,7 +359,7 @@ class LayoutUtils {
 	}
 	
 	/**
-	 * Scales the object to take up this much of the stage horizintally.
+	 * Scales the object to take up this much of the stage horizontally.
 	 * Caution: despite the name, "percent" should be a value between 0
 	 * and 1.
 	 */

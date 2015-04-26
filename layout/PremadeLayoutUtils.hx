@@ -12,7 +12,7 @@ import layout.item.TextSize;
  * 
  * The functions in this class are similar to the equivalent functions
  * in LayoutUtils, except these functions look at the object's current
- * position and size to determine how the object should scale.
+ * position and size to determine how the object should move/scale.
  * @author Joseph Cloutier
  */
 class PremadeLayoutUtils {
@@ -97,6 +97,84 @@ class PremadeLayoutUtils {
 		layout.add(object, Size.simpleHeight());
 		layout.add(object, Position.inside(layout.scale.baseStageHeight - object.bottom, DOWN));
 	}
+	
+	/**
+	 * When the stage scales, the object will "stick" to the top left.
+	 * 
+	 * Requires the object to have been positioned beforehand.
+	 */
+	public static inline function alignTopLeft(object:Resizable, ?layout:Layout):Void {
+		alignLeft(object, layout);
+		alignTop(object, layout);
+	}
+	/**
+	 * When the stage scales, the object will "stick" to the top right.
+	 * 
+	 * Requires the object to have been positioned beforehand.
+	 */
+	public static inline function alignTopRight(object:Resizable, ?layout:Layout):Void {
+		alignRight(object, layout);
+		alignTop(object, layout);
+	}
+	/**
+	 * When the stage scales, the object will "stick" to the bottom left.
+	 * 
+	 * Requires the object to have been positioned beforehand.
+	 */
+	public static inline function alignBottomLeft(object:Resizable, ?layout:Layout):Void {
+		alignLeft(object, layout);
+		alignBottom(object, layout);
+	}
+	/**
+	 * When the stage scales, the object will "stick" to the bottom right.
+	 * 
+	 * Requires the object to have been positioned beforehand.
+	 */
+	public static inline function alignBottomRight(object:Resizable, ?layout:Layout):Void {
+		alignRight(object, layout);
+		alignBottom(object, layout);
+	}
+	/**
+	 * When the stage scales, the object will "stick" to the center of
+	 * the left edge.
+	 * 
+	 * Requires the object to have been positioned beforehand.
+	 */
+	public static inline function alignLeftCenter(object:Resizable, ?layout:Layout):Void {
+		alignLeft(object, layout);
+		centerY(object, layout);
+	}
+	/**
+	 * When the stage scales, the object will "stick" to the center of
+	 * the right edge.
+	 * 
+	 * Requires the object to have been positioned beforehand.
+	 */
+	public static inline function alignRightCenter(object:Resizable, ?layout:Layout):Void {
+		alignRight(object, layout);
+		centerY(object, layout);
+	}
+	/**
+	 * When the stage scales, the object will "stick" to the center of
+	 * the top edge.
+	 * 
+	 * Requires the object to have been positioned beforehand.
+	 */
+	public static inline function alignTopCenter(object:Resizable, ?layout:Layout):Void {
+		centerX(object, layout);
+		alignTop(object, layout);
+	}
+	/**
+	 * When the stage scales, the object will "stick" to the center of
+	 * the bottom edge.
+	 * 
+	 * Requires the object to have been positioned beforehand.
+	 */
+	public static inline function alignBottomCenter(object:Resizable, ?layout:Layout):Void {
+		centerX(object, layout);
+		alignBottom(object, layout);
+	}
+	
 	
 	/**
 	 * When the stage scales, the object will stretch to fill the
