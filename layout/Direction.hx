@@ -7,8 +7,8 @@ package layout;
 enum Direction {
 	LEFT;
 	RIGHT;
-	UP;
-	DOWN;
+	TOP;
+	BOTTOM;
 }
 
 class DirectionUtils {
@@ -17,6 +17,6 @@ class DirectionUtils {
 	}
 	
 	public static inline function isTopLeft(direction:Direction):Bool {
-		return direction == LEFT || direction == UP;
+		return direction == LEFT || direction == TOP;
 	}
 }

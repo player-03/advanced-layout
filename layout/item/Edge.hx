@@ -58,9 +58,9 @@ class Edge implements LayoutItem {
 				mask = LayoutMask.SETS_LEFT_EDGE;
 			case RIGHT:
 				mask = LayoutMask.SETS_RIGHT_EDGE;
-			case UP:
+			case TOP:
 				mask = LayoutMask.SETS_TOP_EDGE;
-			case DOWN:
+			case BOTTOM:
 				mask = LayoutMask.SETS_BOTTOM_EDGE;
 		}
 	}
@@ -71,9 +71,9 @@ class Edge implements LayoutItem {
 					target.left;
 				case RIGHT:
 					target.right;
-				case UP:
+				case TOP:
 					target.top;
-				case DOWN:
+				case BOTTOM:
 					target.bottom;
 			};
 		var adjustment:Float = getEdge(
@@ -89,9 +89,9 @@ class Edge implements LayoutItem {
 					target.left += adjustment;
 				case RIGHT:
 					target.right += adjustment;
-				case UP:
+				case TOP:
 					target.top += adjustment;
-				case DOWN:
+				case BOTTOM:
 					target.bottom += adjustment;
 			}
 		}
@@ -113,7 +113,7 @@ private class OutsideLeftOrTop extends Edge {
 	private var margin:Float;
 	
 	public function new(horizontal:Bool, ?margin:Float = 0) {
-		super(horizontal ? RIGHT : DOWN);
+		super(horizontal ? RIGHT : BOTTOM);
 		
 		this.margin = margin;
 	}
@@ -130,7 +130,7 @@ private class OutsideRightOrBottom extends Edge {
 	private var margin:Float;
 	
 	public function new(horizontal:Bool, ?margin:Float = 0) {
-		super(horizontal ? LEFT : UP);
+		super(horizontal ? LEFT : TOP);
 		
 		this.margin = margin;
 	}
@@ -148,7 +148,7 @@ private class InsideLeftOrTop extends Edge {
 	private var margin:Float;
 	
 	public function new(horizontal:Bool, ?margin:Float = 0) {
-		super(horizontal ? LEFT : UP);
+		super(horizontal ? LEFT : TOP);
 		
 		this.margin = margin;
 	}
@@ -165,7 +165,7 @@ private class InsideRightOrBottom extends Edge {
 	private var margin:Float;
 	
 	public function new(horizontal:Bool, ?margin:Float = 0) {
-		super(horizontal ? RIGHT : DOWN);
+		super(horizontal ? RIGHT : BOTTOM);
 		
 		this.margin = margin;
 	}

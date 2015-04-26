@@ -20,9 +20,9 @@ class Position implements LayoutItem {
 				return new Position(true);
 			case RIGHT:
 				return new Percent(true, 1);
-			case UP:
+			case TOP:
 				return new Position(false);
-			case DOWN:
+			case BOTTOM:
 				return new Percent(false, 1);
 		}
 	}

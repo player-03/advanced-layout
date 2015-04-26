@@ -44,13 +44,13 @@ class LayoutUtils {
 	 * Places the object above the target, separated by the given margin.
 	 */
 	public static inline function above(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
-		check(layout).add(objectToPlace, Position.adjacent(margin, UP), target);
+		check(layout).add(objectToPlace, Position.adjacent(margin, TOP), target);
 	}
 	/**
 	 * Places the object below the target, separated by the given margin.
 	 */
 	public static inline function below(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
-		check(layout).add(objectToPlace, Position.adjacent(margin, DOWN), target);
+		check(layout).add(objectToPlace, Position.adjacent(margin, BOTTOM), target);
 	}
 	
 	/**
@@ -77,7 +77,7 @@ class LayoutUtils {
 	 */
 	public static inline function aboveCenter(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
 		layout = check(layout);
-		layout.add(objectToPlace, Position.adjacent(margin, UP), target);
+		layout.add(objectToPlace, Position.adjacent(margin, TOP), target);
 		layout.add(objectToPlace, Position.centerX(), target);
 	}
 	/**
@@ -86,13 +86,13 @@ class LayoutUtils {
 	 */
 	public static inline function belowCenter(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
 		layout = check(layout);
-		layout.add(objectToPlace, Position.adjacent(margin, DOWN), target);
+		layout.add(objectToPlace, Position.adjacent(margin, BOTTOM), target);
 		layout.add(objectToPlace, Position.centerX(), target);
 	}
 	
 	/**
 	 * Aligns the object with the target along the given edge. For
-	 * instance, if you specify DOWN, the object's bottom edge will be
+	 * instance, if you specify BOTTOM, the object's bottom edge will be
 	 * aligned with the target's bottom edge.
 	 */
 	public static inline function alignWith(objectToPlace:Resizable, target:Resizable, direction:Direction, ?layout:Layout):Void {
@@ -136,7 +136,7 @@ class LayoutUtils {
 	 * the same.
 	 */
 	public static inline function aboveWithResizing(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
-		check(layout).add(objectToPlace, Edge.matchOppositeEdges(DOWN, margin), target);
+		check(layout).add(objectToPlace, Edge.matchOppositeEdges(BOTTOM, margin), target);
 	}
 	/**
 	 * Places the object below the target, separated by the given margin.
@@ -144,7 +144,7 @@ class LayoutUtils {
 	 * the same.
 	 */
 	public static inline function belowWithResizing(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
-		check(layout).add(objectToPlace, Edge.matchOppositeEdges(UP, margin), target);
+		check(layout).add(objectToPlace, Edge.matchOppositeEdges(TOP, margin), target);
 	}
 	
 	//Place objects onstage
@@ -160,7 +160,7 @@ class LayoutUtils {
 	 * Sets the object's y coordinate to this value times Scale.scaleY.
 	 */
 	public static inline function simpleY(objectToPlace:Resizable, y:Float, ?layout:Layout):Void {
-		check(layout).add(objectToPlace, Position.inside(y, UP));
+		check(layout).add(objectToPlace, Position.inside(y, TOP));
 	}
 	
 	/**
@@ -199,13 +199,13 @@ class LayoutUtils {
 	 * Aligns the object to the top edge of the screen.
 	 */
 	public static inline function alignTop(objectToPlace:Resizable, ?margin:Float, ?layout:Layout):Void {
-		check(layout).add(objectToPlace, margin == null ? Position.edge(UP) : Position.inside(margin, UP));
+		check(layout).add(objectToPlace, margin == null ? Position.edge(TOP) : Position.inside(margin, TOP));
 	}
 	/**
 	 * Aligns the object to the bottom edge of the screen.
 	 */
 	public static inline function alignBottom(objectToPlace:Resizable, ?margin:Float, ?layout:Layout):Void {
-		check(layout).add(objectToPlace, margin == null ? Position.edge(DOWN) : Position.inside(margin, DOWN));
+		check(layout).add(objectToPlace, margin == null ? Position.edge(BOTTOM) : Position.inside(margin, BOTTOM));
 	}
 	
 	/**

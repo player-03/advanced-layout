@@ -4,8 +4,8 @@
 	"license": "MIT",
 	"tags": [],
 	"description": "A combination of jgranick/layout and player-03/relative-layout.",
-	"version": "0.3.1",
-	"releasenote": "Support for resizing text.",
+	"version": "0.4.0",
+	"releasenote": "Renamed \"UP\" and \"DOWN\" to \"TOP\" and \"BOTTOM\".",
 	"contributors": [ "player_03", "singmajesty" ],
 	"dependencies": {}
 }

@@ -71,7 +71,7 @@ class PremadeLayoutUtils {
 	public static inline function alignTop(object:Resizable, ?layout:Layout):Void {
 		layout = check(layout);
 		layout.add(object, Size.simpleHeight());
-		layout.add(object, Position.inside(object.y - layout.bounds.y, UP));
+		layout.add(object, Position.inside(object.y - layout.bounds.y, TOP));
 	}
 	/**
 	 * When the stage scales, the object will "stick" to the vertical
@@ -95,7 +95,7 @@ class PremadeLayoutUtils {
 	public static inline function alignBottom(object:Resizable, ?layout:Layout):Void {
 		layout = check(layout);
 		layout.add(object, Size.simpleHeight());
-		layout.add(object, Position.inside(layout.scale.baseStageHeight - object.bottom, DOWN));
+		layout.add(object, Position.inside(layout.scale.baseStageHeight - object.bottom, BOTTOM));
 	}
 	
 	/**
@@ -196,7 +196,7 @@ class PremadeLayoutUtils {
 	public static inline function fillHeight(object:Resizable, ?layout:Layout):Void {
 		layout = check(layout);
 		layout.add(object, Size.heightMinus(layout.scale.baseStageHeight - object.height));
-		layout.add(object, Position.inside(object.y - layout.bounds.y, UP));
+		layout.add(object, Position.inside(object.y - layout.bounds.y, TOP));
 	}
 	
 	/**
