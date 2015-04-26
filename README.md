@@ -7,6 +7,11 @@ An easy way to create fluid layouts. There are two main ways to use it:
 
 If you're switching from OpenFL's Layout library, [click here](#switching-from-openfls-library).
 
+Installation
+============
+
+    haxelib install advanced-layout
+
 Using LayoutUtils
 =================
 
