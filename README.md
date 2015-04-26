@@ -1,10 +1,11 @@
 # Advanced Layout
 
 An easy way to create fluid layouts. There are two main ways to use it:
-    1. Define your layout using convenience functions. (See [LayoutUtils](#using-layoututils).)
-    2. Take a pre-built layout, and make it scale. (See [PremadeLayoutUtils](#using-premadelayoututils).)
 
-Note that the library does nothing except move and resize objects. All examples shown will assume you've already created a Sprite named `mySprite` and a Bitmap named `myBitmap`, and that you've added both to the stage.
+1. Define your layout using convenience functions. (See [LayoutUtils](#using-layoututils).)
+2. Take a pre-built layout, and make it scale. (See [PremadeLayoutUtils](#using-premadelayoututils).)
+
+If you're switching from [OpenFL's Layout library](https://github.com/openfl/layout), [click here](#switching-from-openfl-s-library).
 
 Using LayoutUtils
 =================
@@ -14,6 +15,8 @@ To get started, add this after your imports:
     using layout.LayoutUtils;
 
 LayoutUtils is a [static extension](http://haxe.org/manual/lf-static-extension.html), so this will enable you to call all of its functions more easily.
+
+Note that this library does nothing except move and resize objects. These examples assume you've already created a Sprite named `mySprite` and a Bitmap named `myBitmap`, and that you've added both as children of something.
 
 Scaling
 -------
@@ -108,3 +111,133 @@ Advanced Layout uses an intelligent system to determine whether a given instruct
     myBitmap.above(mySprite);
 
 It's obviously more efficient not to call all these extra functions if they're just going to be replaced, but if you have to change one regularly, it won't cause a memory leak.
+
+Using PremadeLayoutUtils
+========================
+
+As the name implies, PremadeLayoutUtils assumes that you've already created a layout. This can be a SWF layout, as in the [SimpleSWFLayout sample](https://github.com/openfl/openfl-samples/tree/master/SimpleSWFLayout), or it can be one that you arranged via code.
+
+To get started, add this after your import statements:
+
+    using layout.PremadeLayoutUtils;
+
+Scaling (with PremadeLayoutUtils)
+---------------------------------
+
+The "fill" functions will cause an object to fill the stage, except for whatever margins the object started with.
+
+    //A sample rectangle, taking up half the stage's width
+    //and most of the stage's height.
+    var myRect:Shape = new Shape();
+    myRect.graphics.beginFill(0x000000);
+    myRect.graphics.drawRect(0, 0, stage.stageWidth / 2, stage.stageHeight * 0.8);
+    addChild(myRect);
+    
+    //Center the rectangle horizontally. As the stage's
+    //width increases, the rectangle will expand by an equal
+    //amount. (The margins will keep their size.)
+    myRect.x = stage.stageWidth / 2 - myRect.width / 2;
+    myRect.fillWidth();
+    
+    //Place the rectangle on the bottom, so that it takes
+    //up everything except for a small area at the top.
+    myRect.y = stage.stageHeight - myRect.height;
+    myRect.fillHeight();
+
+Positioning (with PremadeLayoutUtils)
+-------------------------------------
+
+When you align an object to an edge, the object's current distance from the edge will be maintained. If you align it to the center, its offset from the center will be maintained.
+
+    //A sample bitmap.
+    var myBitmap:Bitmap = new Bitmap(Assets.getBitmapData("MyBitmap.png"));
+    addChild(myBitmap);
+    
+    //This will cause the bitmap to stay a short distance from
+    //the left.
+    myBitmap.x = 5;
+    myBitmap.alignLeft();
+    
+    //Aligning the bitmap to the right is not recommended
+    //when it's near to the left. If the stage width decreases,
+    //the object will be pushed off the left side.
+    myBitmap.x = 5;
+    myBitmap.alignRight();
+    
+    //Much better!
+    myBitmap.x = stage.stageWidth - myBitmap.width;
+    myBitmap.alignRight();
+    
+    //Now center it.
+    myBitmap.x = stage.stageWidth / 2 - myBitmap.width / 2;
+    myBitmap.centerX();
+    
+    //Put it a short distance left of the center. When the stage
+    //scales, the bitmap will stay to the left of the center.
+    myBitmap.x = stage.stageWidth / 2 + 50;
+    
+    //Align it to the bottom, but leave a large margin. On a small
+    //stage, it will look like the object is near the center, but
+    //on a tall one, the object will appear much closer to the bottom.
+    myBitmap.y = stage.stageHeight - 200;
+    myBitmap.alignBottom();
+
+All of these functions take care of scaling for you, at least along that axis. So `centerY()` takes care of vertical scale, and `alignLeft()` takes care of horizontal scale.
+
+Switching from OpenFL's library
+-------------------------------
+
+First, remove any lines that look like this:
+
+    private var layout:Layout;
+    
+    layout = new Layout();
+    
+    layout.resize(stage.stageWidth, stage.stageHeight);
+    
+    stage.addEventListener(Event.RESIZE, stage_onResize);
+
+All of those things are automatic in this library. The only thing you need to add is "`using layout.PremadeLayoutUtils;`" after your imports.
+
+Next, look for any instances of `layout.addItem()`, making a separate variable from the first parameter if necessary.
+
+    //Example from SimpleSWFLayout.
+    //layout.addItem (new LayoutItem (clip.getChildByName ("Background"), STRETCH, STRETCH, false, false));
+    
+    //With the first parameter separated out.
+    var background:DisplayObject = clip.getChildByName("Background");
+    layout.addItem(new LayoutItem(background, STRETCH, STRETCH, false, false));
+
+Next, convert the `verticalPosition` and `horizontalPosition` arguments. Remember, vertical is first:
+
+    //If verticalPosition is STRETCH:
+    background.fillHeight();
+    
+    //If verticalPosition is TOP:
+    background.alignTop();
+    
+    //If verticalPosition is CENTER:
+    background.centerY();
+    
+    //If verticalPosition is BOTTOM:
+    background.alignBottom();
+    
+    //If verticalPosition is NONE, don't do anything.
+
+Horizontal is second:
+
+    //If horizontalPosition is STRETCH:
+    background.fillWidth();
+    
+    //If horizontalPosition is LEFT:
+    background.alignLeft();
+    
+    //If horizontalPosition is CENTER:
+    background.centerX();
+    
+    //If horizontalPosition is RIGHT:
+    background.alignRight();
+    
+    //If horizontalPosition is NONE, don't do anything.
+
+Finally, delete the `layout.addItem()` line if you haven't already. (This library currently does not allow you to specify a minimum width, sorry.)
