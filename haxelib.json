@@ -4,8 +4,8 @@
 	"license": "MIT",
 	"tags": [],
 	"description": "A combination of jgranick/layout and player-03/relative-layout.",
-	"version": "0.3.0",
-	"releasenote": "",
+	"version": "0.3.1",
+	"releasenote": "Support for resizing text.",
 	"contributors": [ "player_03", "singmajesty" ],
 	"dependencies": {}
 }

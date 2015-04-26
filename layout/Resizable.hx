@@ -42,6 +42,19 @@ abstract Resizable(ResizableImpl) {
 	private inline function get_centerY():Float {
 		return this.y + this.height / 2;
 	}
+	
+	public inline function castDisplayObject<T:DisplayObject>(type:Class<T>):T {
+		if(Std.is(this, DisplayObjectResizable)) {
+			var displayResizable:DisplayObjectResizable = cast this;
+			if(Std.is(displayResizable.displayObject, type)) {
+				return cast displayResizable.displayObject;
+			} else {
+				throw type + " required!";
+			}
+		} else {
+			throw type + " required!";
+		}
+	}
 }
 
 private class ResizableImpl {
@@ -116,7 +129,7 @@ private class ResizableImpl {
 }
 
 private class DisplayObjectResizable extends ResizableImpl {
-	private var displayObject:DisplayObject;
+	public var displayObject:DisplayObject;
 	
 	public function new(displayObject:DisplayObject) {
 		this.displayObject = displayObject;

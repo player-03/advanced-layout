@@ -64,7 +64,7 @@ class Scale {
 	 * boundaries to calculate scale, specify it here. In most cases this
 	 * won't be necessary.
 	 */
-	public function new(baseStageWidth:Int = 800, baseStageHeight:Int = 600,
+	public function new(?baseStageWidth:Int = 800, ?baseStageHeight:Int = 600,
 						?area:Area) {
 		this.baseStageWidth = baseStageWidth;
 		this.baseStageHeight = baseStageHeight;

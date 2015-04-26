@@ -3,7 +3,8 @@ package layout;
 import layout.item.LayoutItem;
 import layout.item.Position;
 import layout.item.Size;
-import flash.display.DisplayObject;
+import flash.text.TextField;
+import layout.item.TextSize;
 
 /**
  * Functions for converting a premade layout into a scaling layout. This
@@ -30,9 +31,9 @@ class PremadeLayoutUtils {
 	 * 
 	 * Requires the object to have been positioned beforehand.
 	 */
-	public static inline function alignLeft(object:DisplayObject, ?layout:Layout):Void {
+	public static inline function alignLeft(object:Resizable, ?layout:Layout):Void {
 		layout = check(layout);
-		layout.add(object, Size.simpleWidth(object.width));
+		layout.add(object, Size.simpleWidth());
 		layout.add(object, Position.inside(object.x - layout.bounds.x, LEFT));
 	}
 	/**
@@ -42,9 +43,9 @@ class PremadeLayoutUtils {
 	 * 
 	 * Requires the object to have been positioned beforehand.
 	 */
-	public static inline function centerX(object:DisplayObject, ?layout:Layout):Void {
+	public static inline function centerX(object:Resizable, ?layout:Layout):Void {
 		layout = check(layout);
-		layout.add(object, Size.simpleWidth(object.width));
+		layout.add(object, Size.simpleWidth());
 		layout.add(object, Position.offsetFromCenterX(object.x - layout.scale.baseStageWidth / 2));
 	}
 	/**
@@ -54,11 +55,10 @@ class PremadeLayoutUtils {
 	 * 
 	 * Requires the object to have been positioned beforehand.
 	 */
-	public static inline function alignRight(object:DisplayObject, ?layout:Layout):Void {
+	public static inline function alignRight(object:Resizable, ?layout:Layout):Void {
 		layout = check(layout);
-		var width:Float = object.width;
-		layout.add(object, Size.simpleWidth(width));
-		layout.add(object, Position.inside(layout.scale.baseStageWidth - (object.x + width), RIGHT));
+		layout.add(object, Size.simpleWidth());
+		layout.add(object, Position.inside(layout.scale.baseStageWidth - object.right, RIGHT));
 	}
 	
 	/**
@@ -68,9 +68,9 @@ class PremadeLayoutUtils {
 	 * 
 	 * Requires the object to have been positioned beforehand.
 	 */
-	public static inline function alignTop(object:DisplayObject, ?layout:Layout):Void {
+	public static inline function alignTop(object:Resizable, ?layout:Layout):Void {
 		layout = check(layout);
-		layout.add(object, Size.simpleHeight(object.height));
+		layout.add(object, Size.simpleHeight());
 		layout.add(object, Position.inside(object.y - layout.bounds.y, UP));
 	}
 	/**
@@ -80,9 +80,9 @@ class PremadeLayoutUtils {
 	 * 
 	 * Requires the object to have been positioned beforehand.
 	 */
-	public static inline function centerY(object:DisplayObject, ?layout:Layout):Void {
+	public static inline function centerY(object:Resizable, ?layout:Layout):Void {
 		layout = check(layout);
-		layout.add(object, Size.simpleHeight(object.height));
+		layout.add(object, Size.simpleHeight());
 		layout.add(object, Position.offsetFromCenterY(object.y - layout.scale.baseStageHeight / 2));
 	}
 	/**
@@ -92,11 +92,10 @@ class PremadeLayoutUtils {
 	 * 
 	 * Requires the object to have been positioned beforehand.
 	 */
-	public static inline function alignBottom(object:DisplayObject, ?layout:Layout):Void {
+	public static inline function alignBottom(object:Resizable, ?layout:Layout):Void {
 		layout = check(layout);
-		var height:Float = object.height;
-		layout.add(object, Size.simpleHeight(height));
-		layout.add(object, Position.inside(layout.scale.baseStageHeight - (object.y + height), DOWN));
+		layout.add(object, Size.simpleHeight());
+		layout.add(object, Position.inside(layout.scale.baseStageHeight - object.bottom, DOWN));
 	}
 	
 	/**
@@ -105,7 +104,7 @@ class PremadeLayoutUtils {
 	 * 
 	 * Requires the object to have been positioned beforehand.
 	 */
-	public static inline function fillWidth(object:DisplayObject, ?layout:Layout):Void {
+	public static inline function fillWidth(object:Resizable, ?layout:Layout):Void {
 		layout = check(layout);
 		layout.add(object, Size.widthMinus(layout.scale.baseStageWidth - object.width));
 		layout.add(object, Position.inside(object.x - layout.bounds.x, LEFT));
@@ -116,9 +115,23 @@ class PremadeLayoutUtils {
 	 * 
 	 * Requires the object to have been positioned beforehand.
 	 */
-	public static inline function fillHeight(object:DisplayObject, ?layout:Layout):Void {
+	public static inline function fillHeight(object:Resizable, ?layout:Layout):Void {
 		layout = check(layout);
 		layout.add(object, Size.heightMinus(layout.scale.baseStageHeight - object.height));
 		layout.add(object, Position.inside(object.y - layout.bounds.y, UP));
+	}
+	
+	/**
+	 * When the stage scales, the text will scale proportionately. If a
+	 * minimum is specified, the text size will not go below that value.
+	 * 
+	 * Uses textField.defaultTextFormat.size as the base value.
+	 */
+	public static function simpleTextSize(textField:TextField, ?minimumTextSize:Float, ?layout:Layout):Void {
+		if(minimumTextSize == null) {
+			check(layout).add(textField, TextSize.simpleTextSize(textField.defaultTextFormat.size));
+		} else {
+			check(layout).add(textField, TextSize.textSizeWithMinimum(textField.defaultTextFormat.size, minimumTextSize));
+		}
 	}
 }

@@ -4,7 +4,9 @@ import layout.item.Edge;
 import layout.item.LayoutItem;
 import layout.item.Position;
 import layout.item.Size;
+import layout.item.TextSize;
 import layout.Resizable;
+import flash.text.TextField;
 
 /**
  * Functions for setting up your layout. This class is designed to be
@@ -199,6 +201,25 @@ class LayoutUtils {
 		check(layout).add(objectToPlace, Position.edge(DOWN));
 	}
 	
+	/**
+	 * Set's the object's x coordinate so that it's the given percent of
+	 * the way across the stage. 0 is equivalent to alignLeft(), 0.5 is
+	 * equivalent to centerX(), and 1 is equivalent to alignRight().
+	 * Values below 0 or above 1 may produce unintuitive results.
+	 */
+	public static inline function horizontalPercent(objectToPlace:Resizable, percent:Float, ?layout:Layout):Void {
+		check(layout).add(objectToPlace, Position.horizontalPercent(percent));
+	}
+	/**
+	 * Set's the object's y coordinate so that it's the given percent of
+	 * the way down the stage. 0 is equivalent to alignTop(), 0.5 is
+	 * equivalent to centerY(), and 1 is equivalent to alignBottom().
+	 * Values below 0 or above 1 may produce unintuitive results.
+	 */
+	public static inline function verticalPercent(objectToPlace:Resizable, percent:Float, ?layout:Layout):Void {
+		check(layout).add(objectToPlace, Position.verticalPercent(percent));
+	}
+	
 	//Simple scaling options
 	//======================
 	
@@ -286,6 +307,25 @@ class LayoutUtils {
 	 */
 	public static inline function fillPercentHeight(objectToScale:Resizable, percent:Float, ?layout:Layout):Void {
 		check(layout).add(objectToScale, Size.relativeHeight(percent));
+	}
+	
+	//Text size
+	//=========
+	
+	/**
+	 * Scales the text in the given text field. If no base size is
+	 * specified, the default text size will be used. If a minimum text
+	 * size is specified, the given value will be used.
+	 */
+	public static inline function simpleTextSize(textField:TextField, ?baseTextSize:Float, ?minimumTextSize:Float, ?layout:Layout):Void {
+		if(baseTextSize == null) {
+			baseTextSize = textField.defaultTextFormat.size;
+		}
+		if(minimumTextSize == null) {
+			check(layout).add(textField, TextSize.simpleTextSize(baseTextSize));
+		} else {
+			check(layout).add(textField, TextSize.textSizeWithMinimum(baseTextSize, minimumTextSize));
+		}
 	}
 	
 	//Miscellaneous

@@ -61,6 +61,11 @@ class LayoutMask {
 	 */
 	public static inline var SETS_BOTTOM_EDGE:Int = 0x80 | AFFECTS_Y | AFFECTS_HEIGHT;
 	
+	/**
+	 * This layout item changes the text size used by a text field.
+	 */
+	public static inline var AFFECTS_TEXT_SIZE:Int = 0x100;
+	
 	public static inline function hasConflict(maskA:Int, maskB:Int):Bool {
 		if(setsEdge(maskA) && setsEdge(maskB)) {
 			maskA = maskA & EDGE_BITS;
