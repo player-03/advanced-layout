@@ -5,7 +5,7 @@ An easy way to create fluid layouts. There are two main ways to use it:
 1. Define your layout using convenience functions. (See [LayoutUtils](#using-layoututils).)
 2. Take a pre-built layout, and make it scale. (See [PremadeLayoutUtils](#using-premadelayoututils).)
 
-If you're switching from [OpenFL's Layout library](https://github.com/openfl/layout), [click here](#switching-from-openfl-s-library).
+If you're switching from OpenFL's Layout library, [click here](#switching-from-openfl-s-library).
 
 Using LayoutUtils
 =================
