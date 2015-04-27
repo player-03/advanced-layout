@@ -30,7 +30,9 @@ class StageArea extends Area {
 	private function onStageResize(?e:Event):Void {
 		var stage:Stage = Lib.current.stage;
 		
-		super.setTo(0, 0, stage.stageWidth, stage.stageHeight);
+		if(stage.stageWidth != width || stage.stageHeight != height) {
+			super.setTo(0, 0, stage.stageWidth, stage.stageHeight);
+		}
 	}
 	
 	//The boundaries are set automatically and can't otherwise be modified.
