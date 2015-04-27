@@ -1,6 +1,6 @@
 # Advanced Layout
 
-An easy way to create fluid layouts. There are two main ways to use it:
+An easy way to create fluid layouts in Flash and OpenFL. There are two main ways to use it:
 
 1. Define your layout using convenience functions. (See [LayoutUtils](#using-layoututils).)
 2. Take a pre-built layout, and make it scale. (See [PremadeLayoutUtils](#using-premadelayoututils).)
@@ -19,31 +19,40 @@ To get started, add this after your imports:
 
     using layout.LayoutUtils;
 
-LayoutUtils is a [static extension](http://haxe.org/manual/lf-static-extension.html), so this will enable you to call all of its functions more easily.
-
-Note that this library does nothing except move and resize objects. These examples assume you've already created a Sprite named `mySprite` and a Bitmap named `myBitmap`, and that you've added both as children of something.
+LayoutUtils is a [static extension](http://haxe.org/manual/lf-static-extension.html), so this isn't required, but it makes things easier.
 
 Scaling
 -------
 
-    //The easiest way to handle scale. The bitmap will now scale with
-    //the stage.
-    myBitmap.simpleScale();
+    //Sample objects.
+    var mySprite:Sprite = new Sprite();
+    mySprite.graphics.beginFill(0x000000);
+    mySprite.graphics.drawCircle(40, 40, 40);
+    addChild(mySprite);
+    var myBitmap:Bitmap = new Bitmap(Assets.getBitmapData("MyBitmap.png"));
+    addChild(myBitmap);
     
-    //Make the sprite fill half the stage. (Warning: this only changes
-    //the size; it won't center it.)
+    //The easiest way to handle scale. The sprite will now scale with
+    //the stage.
+    mySprite.simpleScale();
+    
+    //Make the sprite fill half the stage. Caution: this only changes
+    //the size; it won't center it.
     mySprite.fillPercentWidth(0.5);
     mySprite.fillPercentHeight(0.5);
     
-    //Make the bitmap match the width of the sprite, thereby filling
-    //half the stage (horizontally). The bitmap's height will scale
-    //as before, causing the bitmap to get distorted.
+    //Make the bitmap match the width of the sprite, meaning it will
+    //fill half the stage horizontally. The bitmap's height won't
+    //scale at all... yet.
     myBitmap.matchWidth(sprite);
+    
+    //Scale the bitmap's height so that it isn't distorted.
+    myBitmap.aspectRatio();
 
 Positioning
 -----------
 
-Always set position after setting scale. The new width and height will be required to place the object correctly.
+Always set the position after setting the scale.
 
     //Place the bitmap on the right edge of the stage.
     myBitmap.alignRight();
@@ -67,29 +76,25 @@ Sometimes the best way to create a layout is to specify that one object should b
     //x coordinate, so now it'll be diagonally below.)
     myBitmap.rightOf(mySprite);
     
-    //Place the bitmap directly below the sprite.
+    //Center the bitmap directly below the sprite. (This affects both the
+    //x and y coordinates.)
     myBitmap.belowCenter(mySprite);
     
     //Place the bitmap directly right of the sprite, a long distance away.
     myBitmap.rightOfCenter(mySprite, 300);
     
-    //Place the sprite in the center of the stage. (Warning: now the
-    //instructions are out of order.)
+    //Place the sprite in the center of the stage. Warning: now the
+    //instructions are out of order. The bitmap will be placed to the
+    //right of wherever the sprite was last time.
     mySprite.center();
     
     //Correct the ordering.
     myBitmap.rightOfCenter(mySprite, 300);
-    
-    //Align the bitmap to the sprite's bottom edge, rather than centering
-    //it on the sprite.
-    myBitmap.alignWith(mySprite, BOTTOM);
-
-Remember, when one object is being placed relative to a second object, place the latter object first.
 
 Conflict resolution
 -------------------
 
-Advanced Layout uses an intelligent system to determine whether a given instruction conflicts with a previous command. When a conflict occurs, the old instruction will be removed from the list.
+Advanced Layout uses an intelligent system to determine whether a given instruction conflicts with a previous one. When a conflict occurs, the old instruction will be removed from the list.
 
     //The first instruction never conflicts with anything.
     myBitmap.simpleWidth();
@@ -115,19 +120,19 @@ Advanced Layout uses an intelligent system to determine whether a given instruct
     //only that part will be replaced.
     myBitmap.above(mySprite);
 
-It's obviously more efficient not to call all these extra functions if they're just going to be replaced, but if you have to change one regularly, it won't cause a memory leak.
+It's obviously more efficient not to call all these extra functions in the first place, but if for some reason you have to, it won't cause a memory leak.
 
 Using PremadeLayoutUtils
 ========================
 
-As the name implies, PremadeLayoutUtils assumes that you've already created a layout. This can be a SWF layout, as in the [SimpleSWFLayout sample](https://github.com/openfl/openfl-samples/tree/master/SimpleSWFLayout), or it can be one that you arranged via code.
+As the name implies, PremadeLayoutUtils assumes that you've already arranged your layout. All this class does is make your layout scale with the stage.
 
 To get started, add this after your import statements:
 
     using layout.PremadeLayoutUtils;
 
-Scaling (with PremadeLayoutUtils)
----------------------------------
+PremadeLayoutUtils usage
+------------------------
 
 The "fill" functions will cause an object to fill the stage, except for whatever margins the object started with.
 
@@ -149,10 +154,7 @@ The "fill" functions will cause an object to fill the stage, except for whatever
     myRect.y = stage.stageHeight - myRect.height;
     myRect.fillHeight();
 
-Positioning (with PremadeLayoutUtils)
--------------------------------------
-
-When you align an object to an edge, the object's current distance from the edge will be maintained. If you align it to the center, its offset from the center will be maintained.
+When you align an object to an edge, the object's current distance from the edge will be maintained.
 
     //A sample bitmap.
     var myBitmap:Bitmap = new Bitmap(Assets.getBitmapData("MyBitmap.png"));
@@ -172,7 +174,9 @@ When you align an object to an edge, the object's current distance from the edge
     //Much better!
     myBitmap.x = stage.stageWidth - myBitmap.width;
     myBitmap.alignRight();
-    
+
+If you align it to the center, its offset from the center will be maintained.
+
     //Now center it.
     myBitmap.x = stage.stageWidth / 2 - myBitmap.width / 2;
     myBitmap.centerX();
@@ -187,13 +191,15 @@ When you align an object to an edge, the object's current distance from the edge
     myBitmap.y = stage.stageHeight - 200;
     myBitmap.alignBottom();
 
-All of these functions take care of scaling for you, at least along that axis. So `centerY()` takes care of vertical scale, and `alignLeft()` takes care of horizontal scale.
+Unlike in the LayoutUtils class, all of these functions take care of both positioning and scaling. For instance, `centerY()` takes care of vertical scale, and `alignLeft()` takes care of horizontal scale.
 
 Switching from OpenFL's library
 -------------------------------
 
-First, remove any lines that look like this:
+Most of the old layout code can be removed, except for `layout.addItem()`. Remove anything along these lines:
 
+    import layout.LayoutItem;
+    
     private var layout:Layout;
     
     layout = new Layout();
@@ -202,18 +208,17 @@ First, remove any lines that look like this:
     
     stage.addEventListener(Event.RESIZE, stage_onResize);
 
-All of those things are automatic in this library. The only thing you need to add is "`using layout.PremadeLayoutUtils;`" after your imports.
-
-Next, look for any instances of `layout.addItem()`, making a separate variable from the first parameter if necessary.
+The only thing you need to add is "`using layout.PremadeLayoutUtils;`" after your imports. Next, go through any instances of `layout.addItem()`:
 
     //Example from SimpleSWFLayout.
-    //layout.addItem (new LayoutItem (clip.getChildByName ("Background"), STRETCH, STRETCH, false, false));
-    
-    //With the first parameter separated out.
+    layout.addItem (new LayoutItem (clip.getChildByName ("Background"), STRETCH, STRETCH, false, false));
+
+If the first parameter isn't stored in a variable, separate it out:
+
     var background:DisplayObject = clip.getChildByName("Background");
     layout.addItem(new LayoutItem(background, STRETCH, STRETCH, false, false));
 
-Next, convert the `verticalPosition` and `horizontalPosition` arguments. Remember, vertical is first:
+Next, convert the `verticalPosition` and `horizontalPosition` arguments. Remember, vertical comes first in OpenFL's library:
 
     //If verticalPosition is STRETCH:
     background.fillHeight();
@@ -245,4 +250,4 @@ Horizontal is second:
     
     //If horizontalPosition is NONE, don't do anything.
 
-Finally, delete the `layout.addItem()` line if you haven't already. (This library currently does not allow you to specify a minimum width, sorry.)
+Finally, delete the `layout.addItem()` line, and move on to the next.
