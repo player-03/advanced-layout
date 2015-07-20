@@ -1,30 +1,56 @@
 package layout;
 
 import flash.display.DisplayObject;
+import flash.geom.Rectangle;
 import layout.area.Area;
 
+#if haxeui
+import haxe.ui.toolkit.core.interfaces.IDisplayObject;
+#end
+
 /**
- * Either a DisplayObject or an Area.
+ * Represents an object with position, width, and height. The following
+ * are supported, and will be converted automatically:
+	 * Area (from this library)
+	 * DisplayObject (Flash/OpenFL)
+	 * Rectangle (Flash/OpenFL)
+	 * DisplayObject (HaxeUI)
+	 * Custom classes that extend ResizableImpl
  */
 @:forward(x, y, width, height, baseWidth, baseHeight, left, right, top, bottom)
-abstract Resizable(ResizableImpl) {
+abstract Resizable(ResizableImpl) from ResizableImpl {
 	public var scaleX(get, set):Float;
 	public var scaleY(get, set):Float;
 	
 	public var centerX(get, never):Float;
 	public var centerY(get, never):Float;
 	
+	/**
+	 * Useful for when you need something invisible to mark a position.
+	 */
+	public function new() {
+		return cast new RectangleResizable(new Rectangle(0, 0, 1, 1));
+	}
+	
 	@:from private static inline function fromDisplayObject(displayObject:DisplayObject):Resizable {
 		return cast new DisplayObjectResizable(displayObject);
 	}
+	#if haxeui
+	@:from private static inline function fromHaxeUIObject(haxeUIObject:IDisplayObject):Resizable {
+		return cast new HaxeUIObjectResizable(haxeUIObject);
+	}
+	#end
 	@:from private static inline function fromArea(area:Area):Resizable {
 		return cast new AreaResizable(area);
 	}
+	@:from private static inline function fromRectangle(rectangle:Rectangle):Resizable {
+		return cast new RectangleResizable(rectangle);
+	}
 	
-	private function get_scaleX():Float {
+	private inline function get_scaleX():Float {
 		return this.width / this.baseWidth;
 	}
-	private function set_scaleX(value:Float):Float {
+	private inline function set_scaleX(value:Float):Float {
 		this.width = value * this.baseWidth;
 		return value;
 	}
@@ -57,7 +83,7 @@ abstract Resizable(ResizableImpl) {
 	}
 }
 
-private class ResizableImpl {
+class ResizableImpl {
 	public var x(get, set):Float;
 	public var y(get, set):Float;
 	public var width(get, set):Float;
@@ -154,6 +180,62 @@ private class DisplayObjectResizable extends ResizableImpl {
 	}
 	
 	private override function get_width():Float {
+		#if html5
+			return displayObject.scaleX * baseWidth;
+		#else
+			return displayObject.width;
+		#end
+	}
+	private override function set_width(value:Float):Float {
+		#if html5
+			displayObject.scaleX = value / baseWidth;
+			return value;
+		#else
+			return displayObject.width = value;
+		#end
+	}
+	
+	private override function get_height():Float {
+		#if html5
+			return displayObject.scaleY * baseHeight;
+		#else
+			return displayObject.height;
+		#end
+	}
+	private override function set_height(value:Float):Float {
+		#if html5
+			displayObject.scaleY = value / baseHeight;
+			return value;
+		#else
+			return displayObject.height = value;
+		#end
+	}
+}
+
+#if haxeui
+private class HaxeUIObjectResizable extends ResizableImpl {
+	public var displayObject:IDisplayObject;
+	
+	public function new(displayObject:IDisplayObject) {
+		this.displayObject = displayObject;
+		super();
+	}
+	
+	private override function get_x():Float {
+		return displayObject.x;
+	}
+	private override function set_x(value:Float):Float {
+		return displayObject.x = value;
+	}
+	
+	private override function get_y():Float {
+		return displayObject.y;
+	}
+	private override function set_y(value:Float):Float {
+		return displayObject.y = value;
+	}
+	
+	private override function get_width():Float {
 		return displayObject.width;
 	}
 	private override function set_width(value:Float):Float {
@@ -167,6 +249,7 @@ private class DisplayObjectResizable extends ResizableImpl {
 		return displayObject.height = value;
 	}
 }
+#end
 
 private class AreaResizable extends ResizableImpl {
 	private var area:Area;
@@ -215,5 +298,42 @@ private class AreaResizable extends ResizableImpl {
 	}
 	private override function set_bottom(value:Float):Float {
 		return area.bottom = value;
+	}
+}
+
+private class RectangleResizable extends ResizableImpl {
+	private var rectangle:Rectangle;
+	
+	public function new(rectangle:Rectangle) {
+		this.rectangle = rectangle;
+		super();
+	}
+	
+	private override function get_x():Float {
+		return rectangle.x;
+	}
+	private override function set_x(value:Float):Float {
+		return rectangle.x = value;
+	}
+	
+	private override function get_y():Float {
+		return rectangle.y;
+	}
+	private override function set_y(value:Float):Float {
+		return rectangle.y = value;
+	}
+	
+	private override function get_width():Float {
+		return rectangle.width;
+	}
+	private override function set_width(value:Float):Float {
+		return rectangle.width = value;
+	}
+	
+	private override function get_height():Float {
+		return rectangle.height;
+	}
+	private override function set_height(value:Float):Float {
+		return rectangle.height = value;
 	}
 }

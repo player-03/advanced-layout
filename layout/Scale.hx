@@ -80,19 +80,24 @@ class Scale {
 	private var behavior(null, set):ScaleBehavior;
 	private function set_behavior(value:ScaleBehavior):ScaleBehavior {
 		if(behavior == null && value != null) {
-			area.addEventListener(Event.CHANGE, onResize);
+			area.addEventListener(Event.CHANGE, onResize, false, 1);
 		} else if(behavior != null && value == null) {
 			area.removeEventListener(Event.CHANGE, onResize);
+			
+			x = 1;
+			y = 1;
 		}
 		
 		behavior = value;
 		
-		onResize(null);
+		area.dispatchEvent(new Event(Event.CHANGE));
 		
 		return behavior;
 	}
 	private function onResize(?e:Event):Void {
-		behavior.onResize(Std.int(area.width), Std.int(area.height), this);
+		if(behavior != null) {
+			behavior.onResize(Std.int(area.width), Std.int(area.height), this);
+		}
 	}
 	
 	/**
@@ -100,8 +105,6 @@ class Scale {
 	 */
 	public inline function noScale():Void {
 		behavior = null;
-		x = 1;
-		y = 1;
 	}
 	/**
 	 * Fills the stage. Does not maintain aspect ratio. This is the

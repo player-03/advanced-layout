@@ -302,20 +302,14 @@ class LayoutUtils {
 	 * width isn't specified, the object's initial width will be used.
 	 */
 	public static inline function simpleWidth(objectToScale:Resizable, ?width:Float, ?layout:Layout):Void {
-		if(width != null) {
-			objectToScale.baseWidth = width;
-		}
-		check(layout).add(objectToScale, Size.simpleWidth());
+		check(layout).add(objectToScale, Size.simpleWidth(width));
 	}
 	/**
 	 * Sets the object's height to this value times Scale.scaleY. If the
 	 * height isn't specified, the object's initial height will be used.
 	 */
 	public static inline function simpleHeight(objectToScale:Resizable, ?height:Float, ?layout:Layout):Void {
-		if(height != null) {
-			objectToScale.baseHeight = height;
-		}
-		check(layout).add(objectToScale, Size.simpleHeight());
+		check(layout).add(objectToScale, Size.simpleHeight(height));
 	}
 	
 	//Scale objects relative to one another

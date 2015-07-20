@@ -10,16 +10,28 @@ import layout.Resizable;
  */
 class Size implements LayoutItem {
 	/**
-	 * Set the target's width ignoring everything except the overall Scale.
+	 * Set the target's width ignoring everything except the overall
+	 * Scale. If you specify width, this will behave as if the target
+	 * started at that width.
 	 */
-	public static inline function simpleWidth():Size {
-		return new Size(true);
+	public static inline function simpleWidth(?width:Float):Size {
+		if(width != null) {
+			return new SimpleSize(true, width);
+		} else {
+			return new Size(true);
+		}
 	}
 	/**
-	 * Set the target's height ignoring everything except the overall Scale.
+	 * Set the target's height ignoring everything except the overall
+	 * Scale. If you specify height, this will behave as if the target
+	 * started at that height.
 	 */
-	public static inline function simpleHeight():Size {
-		return new Size(false);
+	public static inline function simpleHeight(?height:Float):Size {
+		if(height != null) {
+			return new SimpleSize(false, height);
+		} else {
+			return new Size(false);
+		}
 	}
 	
 	/**
@@ -87,6 +99,19 @@ class Size implements LayoutItem {
 	
 	private function getSize(targetSize:Float, areaSize:Float, scale:Float):Float {
 		return targetSize * scale;
+	}
+}
+
+private class SimpleSize extends Size {
+	private var size:Float;
+	
+	public function new(horizontal:Bool, size:Float) {
+		super(horizontal);
+		this.size = size;
+	}
+	
+	private override function getSize(targetSize:Float, areaSize:Float, scale:Float):Float {
+		return size * scale;
 	}
 }
 
