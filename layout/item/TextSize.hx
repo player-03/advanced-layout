@@ -12,11 +12,11 @@ import flash.text.TextFormat;
  * If you pass anything except a TextField object, an error will be thrown.
  */
 class TextSize implements LayoutItem {
-	public static inline function simpleTextSize(baseSize:Float):TextSize {
+	public static inline function simpleTextSize(baseSize:Int):TextSize {
 		return new TextSize(baseSize);
 	}
 	
-	public static inline function textSizeWithMinimum(baseSize:Float, minimum:Float):TextSize {
+	public static inline function textSizeWithMinimum(baseSize:Int, minimum:Int):TextSize {
 		return new TextSizeWithMinimum(baseSize, minimum);
 	}
 	
@@ -28,9 +28,9 @@ class TextSize implements LayoutItem {
 	 */
 	public var horizontal:Bool = false;
 	public var mask:Int = LayoutMask.AFFECTS_TEXT_SIZE;
-	private var baseSize:Float;
+	private var baseSize:Int;
 	
-	private function new(baseSize:Float) {
+	private function new(baseSize:Int) {
 		this.baseSize = baseSize;
 		
 		if(tempFormat == null) {
@@ -44,21 +44,26 @@ class TextSize implements LayoutItem {
 		target.castDisplayObject(TextField).setTextFormat(tempFormat);
 	}
 	
-	private function getTextSize(scale:Scale):Float {
-		return baseSize * (horizontal ? scale.x : scale.y);
+	private function getTextSize(scale:Scale):Int {
+		return Math.round(baseSize * (horizontal ? scale.x : scale.y));
 	}
 }
 
 private class TextSizeWithMinimum extends TextSize {
-	private var minimum:Float;
+	private var minimum:Int;
 	
-	private function new(baseSize:Float, minimum:Float) {
+	private function new(baseSize:Int, minimum:Int) {
 		super(baseSize);
 		
 		this.minimum = minimum;
 	}
 	
-	private override function getTextSize(scale:Scale):Float {
-		return Math.max(minimum, super.getTextSize(scale));
+	private override function getTextSize(scale:Scale):Int {
+		var result:Int = super.getTextSize(scale);
+		if(result < minimum) {
+			return minimum;
+		} else {
+			return result;
+		}
 	}
 }

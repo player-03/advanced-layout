@@ -377,9 +377,9 @@ class LayoutUtils {
 	 * specified, the default text size will be used. If a minimum text
 	 * size is specified, the given value will be used.
 	 */
-	public static inline function simpleTextSize(textField:TextField, ?baseTextSize:Float, ?minimumTextSize:Float, ?layout:Layout):Void {
+	public static inline function simpleTextSize(textField:TextField, ?baseTextSize:Int, ?minimumTextSize:Int, ?layout:Layout):Void {
 		if(baseTextSize == null) {
-			baseTextSize = textField.defaultTextFormat.size;
+			baseTextSize = Std.int(textField.defaultTextFormat.size);
 		}
 		if(minimumTextSize == null) {
 			check(layout).add(textField, TextSize.simpleTextSize(baseTextSize));
