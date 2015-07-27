@@ -205,11 +205,19 @@ class PremadeLayoutUtils {
 	 * 
 	 * Uses textField.defaultTextFormat.size as the base value.
 	 */
-	public static function simpleTextSize(textField:TextField, ?minimumTextSize:Float, ?layout:Layout):Void {
+	public static function simpleTextSize(textField:TextField, ?minimumTextSize:Int, ?layout:Layout):Void {
 		if(minimumTextSize == null) {
-			check(layout).add(textField, TextSize.simpleTextSize(textField.defaultTextFormat.size));
+			check(layout).add(textField, TextSize.simpleTextSize(getDefaultTextSize(textField)));
 		} else {
-			check(layout).add(textField, TextSize.textSizeWithMinimum(textField.defaultTextFormat.size, minimumTextSize));
+			check(layout).add(textField, TextSize.textSizeWithMinimum(getDefaultTextSize(textField), minimumTextSize));
 		}
+	}
+	
+	private static inline function getDefaultTextSize(textField:TextField):Int {
+		#if flash
+			return Std.int(textField.defaultTextFormat.size);
+		#else
+			return textField.defaultTextFormat.size
+		#end
 	}
 }
