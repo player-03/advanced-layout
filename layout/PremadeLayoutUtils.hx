@@ -217,7 +217,7 @@ class PremadeLayoutUtils {
 		#if flash
 			return Std.int(textField.defaultTextFormat.size);
 		#else
-			return textField.defaultTextFormat.size
+			return textField.defaultTextFormat.size;
 		#end
 	}
 }
