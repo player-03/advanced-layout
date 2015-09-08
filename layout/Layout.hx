@@ -35,7 +35,7 @@ class Layout {
 	}
 	
 	/**
-	 * The Layout object that will be used (by DynamicLayout and StaticLayout)
+	 * The Layout object that will be used (by LayoutUtils and PremadeLayoutUtils)
 	 * if you don't specify one. You may update this at any time. Setting
 	 * this to null will make it default to stageLayout.
 	 */
