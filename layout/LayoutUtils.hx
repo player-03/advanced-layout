@@ -336,7 +336,7 @@ class LayoutUtils {
 	//===================================
 	
 	/**
-	 * Sets the object's width to fill the stage horizintally, minus the
+	 * Sets the object's width to fill the stage horizontally, minus the
 	 * given margin times two. Call centerX() after this to ensure that
 	 * the same margin appears on both sides of the object.
 	 */
