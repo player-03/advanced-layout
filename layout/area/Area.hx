@@ -7,7 +7,7 @@ import flash.events.EventDispatcher;
  * A rectangular region, to place objects within. Note: area boundaries
  * will not always be strictly enforced.
  * 
- * When the area changes for any reason, it will dispatch a CHANGE event.
+ * After the area changes for any reason, it will dispatch a CHANGE event.
  * @author Joseph Cloutier
  */
 @:allow(layout.Scale)
@@ -24,7 +24,7 @@ class Area extends EventDispatcher {
 	public var top(get, set):Float;
 	public var bottom(get, set):Float;
 	
-	public function new(x:Float = 0, y:Float = 0, width:Float = 0, height:Float = 0) {
+	public function new(?x:Float = 0, ?y:Float = 0, ?width:Float = 0, ?height:Float = 0) {
 		super();
 		
 		setTo(x, y, width, height);
@@ -40,27 +40,27 @@ class Area extends EventDispatcher {
 		Reflect.setField(this, "width", width);
 		Reflect.setField(this, "height", height);
 		
-		dispatchEvent(new Event(Event.CHANGE));
+		queueChangeEvent();
 	}
 	
 	private function set_x(value:Float):Float {
 		x = value;
-		dispatchEvent(new Event(Event.CHANGE));
+		queueChangeEvent();
 		return x;
 	}
 	private function set_y(value:Float):Float {
 		y = value;
-		dispatchEvent(new Event(Event.CHANGE));
+		queueChangeEvent();
 		return y;
 	}
 	private function set_width(value:Float):Float {
 		width = value;
-		dispatchEvent(new Event(Event.CHANGE));
+		queueChangeEvent();
 		return width;
 	}
 	private function set_height(value:Float):Float {
 		height = value;
-		dispatchEvent(new Event(Event.CHANGE));
+		queueChangeEvent();
 		return height;
 	}
 	
@@ -102,5 +102,36 @@ class Area extends EventDispatcher {
 	
 	public inline function clone():Area {
 		return new Area(x, y, width, height);
+	}
+	
+	private static var currentArea:Area;
+	private static var queue:Array<Area> = [];
+	
+	/**
+	 * Dispatches a CHANGE event for this Area, but only after all ongoing
+	 * CHANGE events are resolved.
+	 */
+	private function queueChangeEvent():Void {
+		//This check is skipped on purpose. If there's an infinite loop, it's
+		//the programmer's fault.
+		/*if(this == currentArea) {
+		}*/
+		
+		//Queue this Area unless it's already queued.
+		if(queue.indexOf(this) < 0) {
+			queue.push(this);
+		}
+		
+		//If the queue isn't currently being handled, dispatch events for each
+		//Area in the queue.
+		while(currentArea == null && queue.length > 0) {
+			currentArea = queue[0];
+			queue.splice(0, 1);
+			
+			//Dispatch the event. This may extend the queue.
+			currentArea.dispatchEvent(new Event(Event.CHANGE));
+			
+			currentArea = null;
+		}
 	}
 }
