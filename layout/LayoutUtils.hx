@@ -291,7 +291,7 @@ class LayoutUtils {
 	
 	/**
 	 * The object will be scaled based on the current scale values. This
-	 * assumes that the object is already at a reasonable default size.
+	 * ignores the object's dimensions at the time of calling.
 	 */
 	public static inline function simpleScale(objectToScale:Resizable, ?layout:Layout):Void {
 		simpleWidth(objectToScale, layout);

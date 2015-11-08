@@ -54,6 +54,11 @@ class Scale {
 	public var x(default, null):Float = 1;
 	public var y(default, null):Float = 1;
 	
+	/**
+	 * The average of x and y.
+	 */
+	public var average(get, never):Float;
+	
 	public var baseStageWidth:Int;
 	public var baseStageHeight:Int;
 	
@@ -98,6 +103,10 @@ class Scale {
 		if(behavior != null) {
 			behavior.onResize(Std.int(area.width), Std.int(area.height), this);
 		}
+	}
+	
+	private inline function get_average():Float {
+		return (x + y) / 2;
 	}
 	
 	/**
