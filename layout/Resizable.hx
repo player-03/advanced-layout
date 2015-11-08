@@ -17,7 +17,7 @@ import haxe.ui.toolkit.core.interfaces.IDisplayObject;
 	 * DisplayObject (HaxeUI)
 	 * Custom classes that extend ResizableImpl
  */
-@:forward(x, y, width, height, baseWidth, baseHeight, left, right, top, bottom)
+@:forward(x, y, width, height, baseWidth, baseHeight, left, right, top, bottom, isFrom)
 abstract Resizable(ResizableImpl) from ResizableImpl {
 	public var scaleX(get, set):Float;
 	public var scaleY(get, set):Float;
@@ -152,6 +152,13 @@ class ResizableImpl {
 		height = value - y;
 		return value;
 	}
+	
+	/**
+	 * @return Whether this was generated from the given object.
+	 */
+	public function isFrom(object:Dynamic):Bool {
+		return false;
+	}
 }
 
 private class DisplayObjectResizable extends ResizableImpl {
@@ -210,6 +217,10 @@ private class DisplayObjectResizable extends ResizableImpl {
 			return displayObject.height = value;
 		#end
 	}
+	
+	public override function isFrom(object:Dynamic):Bool {
+		return object == displayObject;
+	}
 }
 
 #if haxeui
@@ -247,6 +258,10 @@ private class HaxeUIObjectResizable extends ResizableImpl {
 	}
 	private override function set_height(value:Float):Float {
 		return displayObject.height = value;
+	}
+	
+	public override function isFrom(object:Dynamic):Bool {
+		return object == displayObject;
 	}
 }
 #end
@@ -299,6 +314,10 @@ private class AreaResizable extends ResizableImpl {
 	private override function set_bottom(value:Float):Float {
 		return area.bottom = value;
 	}
+	
+	public override function isFrom(object:Dynamic):Bool {
+		return object == area;
+	}
 }
 
 private class RectangleResizable extends ResizableImpl {
@@ -335,5 +354,9 @@ private class RectangleResizable extends ResizableImpl {
 	}
 	private override function set_height(value:Float):Float {
 		return rectangle.height = value;
+	}
+	
+	public override function isFrom(object:Dynamic):Bool {
+		return object == rectangle;
 	}
 }

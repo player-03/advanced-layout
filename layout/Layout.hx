@@ -4,6 +4,7 @@ import flash.events.Event;
 import flash.Vector;
 import layout.area.Area;
 import layout.area.StageArea;
+import layout.item.CustomCallback;
 import layout.item.LayoutItem;
 import layout.Resizable;
 
@@ -148,11 +149,53 @@ class Layout {
 		boundItem.item.apply(boundItem.target, boundItem.area, scale);
 	}
 	
+	/**
+	 * Adds a callback to be called at the current point in the layout process.
+	 * If items have already been added using add(), those will be applied
+	 * before calling the callback. If more items are added later, those will be
+	 * applied afterwards.
+	 */
+	public inline function addCallback(callback:Scale -> Void, ?callImmediately:Bool = false):Void {
+		items.push(new BoundItem(null, null, new CustomCallback(callback)));
+		
+		if(callImmediately) {
+			callback(scale);
+		}
+	}
+	
 	public inline function addMultiple(target:Resizable,
 						items:Array<LayoutItem>,
-						?base:Resizable) {
+						?base:Resizable):Void {
 		for(item in items) {
 			add(target, item, base);
+		}
+	}
+	
+	/**
+	 * Removes all references to the given object.
+	 */
+	public function remove(target:Dynamic):Void {
+		var i:Int = items.length - 1;
+		while(i >= 0) {
+			if(items[i].target.isFrom(target) || items[i].area.isFrom(target)) {
+				items.splice(i, 1);
+			}
+			
+			i--;
+		}
+	}
+	
+	/**
+	 * Removes the given callback function.
+	 */
+	public inline function removeCallback(callback:Scale -> Void):Void {
+		var i:Int = items.length - 1;
+		while(i >= 0) {
+			if(Std.is(items[i].item, CustomCallback) && (items[i].item : CustomCallback).callback == callback) {
+				items.splice(i, 1);
+			}
+			
+			i--;
 		}
 	}
 	
