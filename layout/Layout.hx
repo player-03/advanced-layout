@@ -191,7 +191,7 @@ class Layout {
 	public inline function removeCallback(callback:Scale -> Void):Void {
 		var i:Int = items.length - 1;
 		while(i >= 0) {
-			if(Std.is(items[i].item, CustomCallback) && (items[i].item : CustomCallback).callback == callback) {
+			if(Std.is(items[i].item, CustomCallback) && cast(items[i].item, CustomCallback).callback == callback) {
 				items.splice(i, 1);
 			}
 			
