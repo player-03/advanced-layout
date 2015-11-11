@@ -55,10 +55,10 @@ abstract Resizable(ResizableImpl) from ResizableImpl {
 		return value;
 	}
 	private inline function get_scaleY():Float {
-		return this.width / this.baseWidth;
+		return this.height / this.baseHeight;
 	}
 	private inline function set_scaleY(value:Float):Float {
-		this.width = value * this.baseWidth;
+		this.height = value * this.baseHeight;
 		return value;
 	}
 	
