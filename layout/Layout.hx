@@ -130,15 +130,29 @@ class Layout {
 	public function add(target:Resizable,
 						item:LayoutItem,
 						?base:Resizable):Void {
-		var i:Int = items.length - 1;
-		while(i >= 0) {
-			if(items[i].target == target
-					&& LayoutMask.hasConflict(
-						items[i].item.mask,
-						item.mask)) {
-				items.splice(i, 1);
+		//If the target was added before, use the original Resizable object.
+		//(It would be more efficient not to create multiple Resizable objects
+		//at all, but that isn't feasible.)
+		var wasAddedBefore:Bool = false;
+		for(item in items) {
+			if(item.target != null && item.target.equals(target)) {
+				target = item.target;
+				wasAddedBefore = true;
+				break;
 			}
-			i--;
+		}
+		
+		if(wasAddedBefore) {
+			var i:Int = items.length - 1;
+			while(i >= 0) {
+				if(items[i].target == target
+						&& LayoutMask.hasConflict(
+							items[i].item.mask,
+							item.mask)) {
+					items.splice(i, 1);
+				}
+				i--;
+			}
 		}
 		
 		var boundItem:BoundItem =
@@ -174,10 +188,10 @@ class Layout {
 	/**
 	 * Removes all references to the given object.
 	 */
-	public function remove(target:Dynamic):Void {
+	public function remove(target:Resizable):Void {
 		var i:Int = items.length - 1;
 		while(i >= 0) {
-			if(items[i].target.isFrom(target) || items[i].area.isFrom(target)) {
+			if(items[i].target.equals(target) || items[i].area.equals(target)) {
 				items.splice(i, 1);
 			}
 			
@@ -206,7 +220,7 @@ class Layout {
 	public function getMask(target:Resizable):Int {
 		var mask:Int = 0;
 		for(item in items) {
-			if(item.target == target) {
+			if(item.target != null && item.target.equals(target)) {
 				mask |= item.item.mask;
 			}
 		}

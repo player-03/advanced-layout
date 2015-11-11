@@ -17,7 +17,7 @@ import haxe.ui.toolkit.core.interfaces.IDisplayObject;
 	 * DisplayObject (HaxeUI)
 	 * Custom classes that extend ResizableImpl
  */
-@:forward(x, y, width, height, baseWidth, baseHeight, left, right, top, bottom, isFrom)
+@:forward(x, y, width, height, baseWidth, baseHeight, left, right, top, bottom)
 abstract Resizable(ResizableImpl) from ResizableImpl {
 	public var scaleX(get, set):Float;
 	public var scaleY(get, set):Float;
@@ -81,6 +81,14 @@ abstract Resizable(ResizableImpl) from ResizableImpl {
 			throw type + " required!";
 		}
 	}
+	
+	public inline function equals(other:Resizable):Bool {
+		return this.sourceObject == other.asImpl().sourceObject;
+	}
+	
+	private inline function asImpl():ResizableImpl {
+		return this;
+	}
 }
 
 class ResizableImpl {
@@ -90,6 +98,8 @@ class ResizableImpl {
 	public var height(get, set):Float;
 	public var baseWidth:Float;
 	public var baseHeight:Float;
+	
+	public var sourceObject(get, never):Dynamic;
 	
 	/**
 	 * The setter adjusts the x coordinate and width so that the left
@@ -153,11 +163,9 @@ class ResizableImpl {
 		return value;
 	}
 	
-	/**
-	 * @return Whether this was generated from the given object.
-	 */
-	public function isFrom(object:Dynamic):Bool {
-		return false;
+	private function get_sourceObject():Dynamic {
+		throw "get_sourceObject() must be overridden!";
+		return null;
 	}
 }
 
@@ -218,8 +226,8 @@ private class DisplayObjectResizable extends ResizableImpl {
 		#end
 	}
 	
-	public override function isFrom(object:Dynamic):Bool {
-		return object == displayObject;
+	private override function get_sourceObject():Dynamic {
+		return displayObject;
 	}
 }
 
@@ -260,8 +268,8 @@ private class HaxeUIObjectResizable extends ResizableImpl {
 		return displayObject.height = value;
 	}
 	
-	public override function isFrom(object:Dynamic):Bool {
-		return object == displayObject;
+	private override function get_sourceObject():Dynamic {
+		return displayObject;
 	}
 }
 #end
@@ -315,8 +323,8 @@ private class AreaResizable extends ResizableImpl {
 		return area.bottom = value;
 	}
 	
-	public override function isFrom(object:Dynamic):Bool {
-		return object == area;
+	private override function get_sourceObject():Dynamic {
+		return area;
 	}
 }
 
@@ -356,7 +364,7 @@ private class RectangleResizable extends ResizableImpl {
 		return rectangle.height = value;
 	}
 	
-	public override function isFrom(object:Dynamic):Bool {
-		return object == rectangle;
+	private override function get_sourceObject():Dynamic {
+		return rectangle;
 	}
 }
