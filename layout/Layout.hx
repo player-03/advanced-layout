@@ -202,7 +202,7 @@ class Layout {
 	/**
 	 * Removes the given callback function.
 	 */
-	public inline function removeCallback(callback:Scale -> Void):Void {
+	public inline function removeCallback(callback:Void -> Void):Void {
 		var i:Int = items.length - 1;
 		while(i >= 0) {
 			if(Std.is(items[i].item, CustomCallback) && cast(items[i].item, CustomCallback).callback == callback) {
