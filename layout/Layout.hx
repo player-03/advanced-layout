@@ -65,7 +65,7 @@ class Layout {
 		}
 		
 		if(scale == null) {
-			this.scale = new Scale(Std.int(this.bounds.width), Std.int(this.bounds.height));
+			this.scale = new Scale(Std.int(this.bounds.width), Std.int(this.bounds.height), this.bounds);
 		} else {
 			this.scale = scale;
 		}
