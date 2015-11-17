@@ -169,11 +169,11 @@ class Layout {
 	 * before calling the callback. If more items are added later, those will be
 	 * applied afterwards.
 	 */
-	public inline function addCallback(callback:Scale -> Void, ?callImmediately:Bool = false):Void {
+	public inline function addCallback(callback:Void -> Void, callImmediately:Bool):Void {
 		items.push(new BoundItem(null, null, new CustomCallback(callback)));
 		
 		if(callImmediately) {
-			callback(scale);
+			callback();
 		}
 	}
 	
