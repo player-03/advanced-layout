@@ -134,4 +134,8 @@ class Area extends EventDispatcher {
 			currentArea = null;
 		}
 	}
+	
+	public override function toString():String {
+		return '(x=$x, y=$y, width=$width, height=$height)';
+	}
 }
