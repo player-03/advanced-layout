@@ -36,7 +36,7 @@ class StageArea extends Area {
 	}
 	
 	//The boundaries are set automatically and can't otherwise be modified.
-	public override function setTo(x:Float, y:Float, width:Float, height:Float):Void {
+	public override function setTo(x:Float, y:Float, width:Float, height:Float, ?suppressEvent:Bool = false):Void {
 	}
 	private override function set_x(value:Float):Float {
 		return x;

@@ -34,13 +34,15 @@ class Area extends EventDispatcher {
 	 * Sets this rectangle to the given values, only dispatching a single
 	 * CHANGE event in the process.
 	 */
-	public function setTo(x:Float, y:Float, width:Float, height:Float):Void {
+	public function setTo(x:Float, y:Float, width:Float, height:Float, ?suppressEvent:Bool = false):Void {
 		Reflect.setField(this, "x", x);
 		Reflect.setField(this, "y", y);
 		Reflect.setField(this, "width", width);
 		Reflect.setField(this, "height", height);
 		
-		queueChangeEvent();
+		if(!suppressEvent) {
+			queueChangeEvent();
+		}
 	}
 	
 	private function set_x(value:Float):Float {

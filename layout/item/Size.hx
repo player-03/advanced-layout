@@ -98,7 +98,7 @@ class Size implements LayoutItem {
 	}
 	
 	private function getSize(targetSize:Float, areaSize:Float, scale:Float):Float {
-		return targetSize * scale;
+		return targetSize;
 	}
 }
 
@@ -152,6 +152,8 @@ private class MarginSize extends Size {
 }
 
 /**
+ * Like MarginSize, but it ignores scale.
+ * 
  * Warning: this name may be a little misleading; the class only allows
  * for one margin of the given size. If you want a margin on both sides,
  * multiply by 2.
