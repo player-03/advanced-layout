@@ -191,7 +191,9 @@ class Layout {
 	public function remove(target:Resizable):Void {
 		var i:Int = items.length - 1;
 		while(i >= 0) {
-			if(items[i].target.equals(target) || items[i].area.equals(target)) {
+			if(items[i].target == null) {
+				//Skip callback items.
+			} else if(items[i].target.equals(target) || items[i].area.equals(target)) {
 				items.splice(i, 1);
 			}
 			
