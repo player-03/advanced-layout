@@ -112,10 +112,9 @@ class Area extends EventDispatcher {
 	 * CHANGE events are resolved.
 	 */
 	private function queueChangeEvent():Void {
-		//This check is skipped on purpose. If there's an infinite loop, it's
-		//the programmer's fault.
-		/*if(this == currentArea) {
-		}*/
+		if(this == currentArea) {
+			return;
+		}
 		
 		//Queue this Area unless it's already queued.
 		if(queue.indexOf(this) < 0) {
