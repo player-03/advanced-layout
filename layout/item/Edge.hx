@@ -154,7 +154,7 @@ private class InsideLeftOrTop extends Edge {
 	}
 	
 	private override function getEdge(areaMin:Float, areaSize:Float, targetEdge:Float, scale:Float):Float {
-		return areaMin - margin * scale;
+		return areaMin + margin * scale;
 	}
 }
 /**
@@ -171,6 +171,6 @@ private class InsideRightOrBottom extends Edge {
 	}
 	
 	private override function getEdge(areaMin:Float, areaSize:Float, targetEdge:Float, scale:Float):Float {
-		return areaMin + areaSize + margin * scale;
+		return areaMin + areaSize - margin * scale;
 	}
 }
