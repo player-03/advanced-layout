@@ -20,8 +20,6 @@ class TextSize implements LayoutItem {
 		return new TextSizeWithMinimum(baseSize, minimum);
 	}
 	
-	private static var tempFormat:TextFormat;
-	
 	/**
 	 * In most cases this won't matter much, but if you want to use
 	 * Scale.x rather than Scale.y, set this to true.
@@ -32,16 +30,17 @@ class TextSize implements LayoutItem {
 	
 	private function new(baseSize:Int) {
 		this.baseSize = baseSize;
-		
-		if(tempFormat == null) {
-			tempFormat = new TextFormat();
-		}
 	}
 	
 	public function apply(target:Resizable, area:Resizable, scale:Scale):Void {
-		tempFormat.size = getTextSize(scale);
+		var textField:TextField = target.castDisplayObject(TextField);
 		
-		target.castDisplayObject(TextField).setTextFormat(tempFormat);
+		var format:TextFormat = textField.defaultTextFormat;
+		
+		format.size = getTextSize(scale);
+		
+		textField.defaultTextFormat = format;
+		textField.setTextFormat(format);
 	}
 	
 	private function getTextSize(scale:Scale):Int {
