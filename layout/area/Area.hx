@@ -113,7 +113,7 @@ class Area extends EventDispatcher {
 	 * Dispatches a CHANGE event for this Area, but only after all ongoing
 	 * CHANGE events are resolved.
 	 */
-	private function queueChangeEvent():Void {
+	public function queueChangeEvent():Void {
 		if(this == currentArea) {
 			return;
 		}
