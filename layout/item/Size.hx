@@ -98,7 +98,7 @@ class Size implements LayoutItem {
 	}
 	
 	private function getSize(targetSize:Float, areaSize:Float, scale:Float):Float {
-		return targetSize;
+		return targetSize * scale;
 	}
 }
 
