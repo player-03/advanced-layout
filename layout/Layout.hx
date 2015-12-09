@@ -90,6 +90,17 @@ class Layout {
 		}
 	}
 	
+	/**
+	 * Applies this layout to the given item only.
+	 */
+	public function applyTo(target:Resizable):Void {
+		for(instruction in items) {
+			if(instruction.target != null && instruction.target.equals(target)) {
+				instruction.item.apply(instruction.target, instruction.area, scale);
+			}
+		}
+	}
+	
 	public function dispose():Void {
 		bounds.removeEventListener(Event.CHANGE, onBoundsChanged);
 		items = null;
@@ -213,6 +224,21 @@ class Layout {
 			
 			i--;
 		}
+	}
+	
+	/**
+	 * @return Whether this target/item pair would overwrite an existing pair.
+	 */
+	public function conflictExists(target:Resizable, item:LayoutItem):Bool {
+		for(i in items) {
+			if(i.target != null && i.target.equals(target)
+				&& LayoutMask.hasConflict(
+							i.item.mask,
+							item.mask)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**
