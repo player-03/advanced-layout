@@ -116,35 +116,58 @@ class LayoutUtils {
 	
 	/**
 	 * Places the object left of the target, separated by the given
-	 * margin. Only the object's right edge will move; its left edge will
-	 * stay the same.
+	 * margin. Compatible with rightOfWithResizing().
 	 */
-	public static inline function leftOfWithResizing(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
-		check(layout).add(objectToPlace, Edge.matchOppositeEdges(RIGHT, margin), target);
+	public static function leftOfWithResizing(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
+		layout = check(layout);
+		layout.add(objectToPlace, Edge.matchOppositeEdges(RIGHT, margin), target);
+		
+		var fill:Edge = Edge.matchSameEdges(LEFT, margin);
+		if(!layout.conflictExists(objectToPlace, fill)) {
+			layout.add(objectToPlace, fill);
+		}
 	}
+	
 	/**
 	 * Places the object right of the target, separated by the given
-	 * margin. Only the object's left edge will move; its right edge will
-	 * stay the same.
+	 * margin. Compatible with leftOfWithResizing().
 	 */
-	public static inline function rightOfWithResizing(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
-		check(layout).add(objectToPlace, Edge.matchOppositeEdges(LEFT, margin), target);
+	public static function rightOfWithResizing(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
+		layout = check(layout);
+		layout.add(objectToPlace, Edge.matchOppositeEdges(LEFT, margin), target);
+		
+		var fill:Edge = Edge.matchSameEdges(RIGHT, margin);
+		if(!layout.conflictExists(objectToPlace, fill)) {
+			layout.add(objectToPlace, fill);
+		}
 	}
+	
 	/**
 	 * Places the object above the target, separated by the given margin.
-	 * Only the object's bottom edge will move; its top edge will stay
-	 * the same.
+	 * Compatible with belowWithResizing().
 	 */
-	public static inline function aboveWithResizing(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
-		check(layout).add(objectToPlace, Edge.matchOppositeEdges(BOTTOM, margin), target);
+	public static function aboveWithResizing(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
+		layout = check(layout);
+		layout.add(objectToPlace, Edge.matchOppositeEdges(BOTTOM, margin), target);
+		
+		var fill:Edge = Edge.matchSameEdges(TOP, margin);
+		if(!layout.conflictExists(objectToPlace, fill)) {
+			layout.add(objectToPlace, fill);
+		}
 	}
+	
 	/**
 	 * Places the object below the target, separated by the given margin.
-	 * Only the object's top edge will move; its bottom edge will stay
-	 * the same.
+	 * Compatible with aboveWithResizing().
 	 */
-	public static inline function belowWithResizing(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
-		check(layout).add(objectToPlace, Edge.matchOppositeEdges(TOP, margin), target);
+	public static function belowWithResizing(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
+		layout = check(layout);
+		layout.add(objectToPlace, Edge.matchOppositeEdges(TOP, margin), target);
+		
+		var fill:Edge = Edge.matchSameEdges(BOTTOM, margin);
+		if(!layout.conflictExists(objectToPlace, fill)) {
+			layout.add(objectToPlace, fill);
+		}
 	}
 	
 	//Place objects onstage
