@@ -134,12 +134,12 @@ class LayoutUtils {
 	 */
 	public static function rightOfWithResizing(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
 		layout = check(layout);
-		layout.add(objectToPlace, Edge.matchOppositeEdges(LEFT, margin), target);
-		
 		var fill:Edge = Edge.matchSameEdges(RIGHT, margin);
 		if(!layout.conflictExists(objectToPlace, fill)) {
 			layout.add(objectToPlace, fill);
 		}
+		
+		layout.add(objectToPlace, Edge.matchOppositeEdges(LEFT, margin), target);
 	}
 	
 	/**
@@ -162,12 +162,12 @@ class LayoutUtils {
 	 */
 	public static function belowWithResizing(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
 		layout = check(layout);
-		layout.add(objectToPlace, Edge.matchOppositeEdges(TOP, margin), target);
-		
 		var fill:Edge = Edge.matchSameEdges(BOTTOM, margin);
 		if(!layout.conflictExists(objectToPlace, fill)) {
 			layout.add(objectToPlace, fill);
 		}
+		
+		layout.add(objectToPlace, Edge.matchOppositeEdges(TOP, margin), target);
 	}
 	
 	//Place objects onstage
