@@ -116,9 +116,9 @@ class LayoutUtils {
 	
 	/**
 	 * Places the object left of the target, separated by the given
-	 * margin. Compatible with rightOfWithResizing().
+	 * margin. Compatible with fillAreaRightOf().
 	 */
-	public static function leftOfWithResizing(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
+	public static function fillAreaLeftOf(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
 		layout = check(layout);
 		layout.add(objectToPlace, Edge.matchOppositeEdges(RIGHT, margin), target);
 		
@@ -130,9 +130,9 @@ class LayoutUtils {
 	
 	/**
 	 * Places the object right of the target, separated by the given
-	 * margin. Compatible with leftOfWithResizing().
+	 * margin. Compatible with fillAreaLeftOf().
 	 */
-	public static function rightOfWithResizing(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
+	public static function fillAreaRightOf(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
 		layout = check(layout);
 		var fill:Edge = Edge.matchSameEdges(RIGHT, margin);
 		if(!layout.conflictExists(objectToPlace, fill)) {
@@ -144,9 +144,9 @@ class LayoutUtils {
 	
 	/**
 	 * Places the object above the target, separated by the given margin.
-	 * Compatible with belowWithResizing().
+	 * Compatible with fillAreaBelow().
 	 */
-	public static function aboveWithResizing(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
+	public static function fillAreaAbove(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
 		layout = check(layout);
 		layout.add(objectToPlace, Edge.matchOppositeEdges(BOTTOM, margin), target);
 		
@@ -158,9 +158,9 @@ class LayoutUtils {
 	
 	/**
 	 * Places the object below the target, separated by the given margin.
-	 * Compatible with aboveWithResizing().
+	 * Compatible with fillAreaAbove().
 	 */
-	public static function belowWithResizing(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
+	public static function fillAreaBelow(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
 		layout = check(layout);
 		var fill:Edge = Edge.matchSameEdges(BOTTOM, margin);
 		if(!layout.conflictExists(objectToPlace, fill)) {
@@ -168,6 +168,20 @@ class LayoutUtils {
 		}
 		
 		layout.add(objectToPlace, Edge.matchOppositeEdges(TOP, margin), target);
+	}
+	
+	//For backwards compatibility.
+	@:noCompletion public static inline function leftOfWithResizing(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
+		fillAreaLeftOf(objectToPlace, target, margin, layout);
+	}
+	@:noCompletion public static inline function rightOfWithResizing(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
+		fillAreaRightOf(objectToPlace, target, margin, layout);
+	}
+	@:noCompletion public static inline function aboveWithResizing(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
+		fillAreaAbove(objectToPlace, target, margin, layout);
+	}
+	@:noCompletion public static inline function belowWithResizing(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
+		fillAreaBelow(objectToPlace, target, margin, layout);
 	}
 	
 	//Place objects onstage
