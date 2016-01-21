@@ -5,6 +5,11 @@ import flash.events.EventDispatcher;
 import flash.display.Stage;
 import flash.Lib;
 
+#if flixel
+import flixel.FlxG;
+import flixel.system.scaleModes.StageSizeScaleMode;
+#end
+
 /**
  * The full area of the stage. Use StageArea.instance rather than
  * instantiating it yourself.
@@ -23,17 +28,28 @@ class StageArea extends Area {
 	private function new() {
 		super();
 		
-		Lib.current.stage.addEventListener(Event.RESIZE, onStageResize, false, 1);
-		onStageResize(null);
+		#if flixel
+			FlxG.signals.gameResized.add(onStageResize);
+			FlxG.scaleMode = new StageSizeScaleMode();
+		#else
+			Lib.current.stage.addEventListener(Event.RESIZE, onStageResize, false, 1);
+			onStageResize(null);
+		#end
 	}
 	
-	private function onStageResize(?e:Event):Void {
-		var stage:Stage = Lib.current.stage;
-		
-		if(stage.stageWidth != width || stage.stageHeight != height) {
-			super.setTo(0, 0, stage.stageWidth, stage.stageHeight);
+	#if flixel
+		private function onStageResize(width:Int, height:Int):Void {
+			super.setTo(0, 0, width, height);
 		}
-	}
+	#else
+		private function onStageResize(?e:Event):Void {
+			var stage:Stage = Lib.current.stage;
+			
+			if(stage.stageWidth != width || stage.stageHeight != height) {
+				super.setTo(0, 0, stage.stageWidth, stage.stageHeight);
+			}
+		}
+	#end
 	
 	//The boundaries are set automatically and can't otherwise be modified.
 	public override function setTo(x:Float, y:Float, width:Float, height:Float, ?suppressEvent:Bool = false):Void {
