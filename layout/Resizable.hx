@@ -7,6 +7,9 @@ import layout.area.Area;
 #if haxeui
 import haxe.ui.toolkit.core.interfaces.IDisplayObject;
 #end
+#if flixel
+import flixel.FlxObject;
+#end
 
 /**
  * Represents an object with position, width, and height. The following
@@ -38,6 +41,11 @@ abstract Resizable(ResizableImpl) from ResizableImpl {
 	#if haxeui
 	@:from private static inline function fromHaxeUIObject(haxeUIObject:IDisplayObject):Resizable {
 		return cast new HaxeUIObjectResizable(haxeUIObject);
+	}
+	#end
+	#if flixel
+	@:from private static inline function fromFlxObject(flxObject:FlxObject):Resizable {
+		return cast new FlxObjectResizable(flxObject);
 	}
 	#end
 	@:from private static inline function fromArea(area:Area):Resizable {
@@ -231,49 +239,6 @@ private class DisplayObjectResizable extends ResizableImpl {
 	}
 }
 
-#if haxeui
-private class HaxeUIObjectResizable extends ResizableImpl {
-	public var displayObject:IDisplayObject;
-	
-	public function new(displayObject:IDisplayObject) {
-		this.displayObject = displayObject;
-		super();
-	}
-	
-	private override function get_x():Float {
-		return displayObject.x;
-	}
-	private override function set_x(value:Float):Float {
-		return displayObject.x = value;
-	}
-	
-	private override function get_y():Float {
-		return displayObject.y;
-	}
-	private override function set_y(value:Float):Float {
-		return displayObject.y = value;
-	}
-	
-	private override function get_width():Float {
-		return displayObject.width;
-	}
-	private override function set_width(value:Float):Float {
-		return displayObject.width = value;
-	}
-	
-	private override function get_height():Float {
-		return displayObject.height;
-	}
-	private override function set_height(value:Float):Float {
-		return displayObject.height = value;
-	}
-	
-	private override function get_sourceObject():Dynamic {
-		return displayObject;
-	}
-}
-#end
-
 private class AreaResizable extends ResizableImpl {
 	private var area:Area;
 	
@@ -368,3 +333,89 @@ private class RectangleResizable extends ResizableImpl {
 		return rectangle;
 	}
 }
+
+#if haxeui
+private class HaxeUIObjectResizable extends ResizableImpl {
+	public var displayObject:IDisplayObject;
+	
+	public function new(displayObject:IDisplayObject) {
+		this.displayObject = displayObject;
+		super();
+	}
+	
+	private override function get_x():Float {
+		return displayObject.x;
+	}
+	private override function set_x(value:Float):Float {
+		return displayObject.x = value;
+	}
+	
+	private override function get_y():Float {
+		return displayObject.y;
+	}
+	private override function set_y(value:Float):Float {
+		return displayObject.y = value;
+	}
+	
+	private override function get_width():Float {
+		return displayObject.width;
+	}
+	private override function set_width(value:Float):Float {
+		return displayObject.width = value;
+	}
+	
+	private override function get_height():Float {
+		return displayObject.height;
+	}
+	private override function set_height(value:Float):Float {
+		return displayObject.height = value;
+	}
+	
+	private override function get_sourceObject():Dynamic {
+		return displayObject;
+	}
+}
+#end
+
+#if flixel
+private class FlxObjectResizable extends ResizableImpl {
+	public var flxObject:FlxObject;
+	
+	public function new(flxObject:FlxObject) {
+		this.flxObject = flxObject;
+		super();
+	}
+	
+	private override function get_x():Float {
+		return flxObject.x;
+	}
+	private override function set_x(value:Float):Float {
+		return flxObject.x = value;
+	}
+	
+	private override function get_y():Float {
+		return flxObject.y;
+	}
+	private override function set_y(value:Float):Float {
+		return flxObject.y = value;
+	}
+	
+	private override function get_width():Float {
+		return flxObject.width;
+	}
+	private override function set_width(value:Float):Float {
+		return flxObject.width = value;
+	}
+	
+	private override function get_height():Float {
+		return flxObject.height;
+	}
+	private override function set_height(value:Float):Float {
+		return flxObject.height = value;
+	}
+	
+	private override function get_sourceObject():Dynamic {
+		return flxObject;
+	}
+}
+#end
