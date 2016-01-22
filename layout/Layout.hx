@@ -8,9 +8,10 @@ import layout.item.CustomCallback;
 import layout.item.LayoutItem;
 import layout.Resizable;
 
-using layout.LayoutUtils;
+using layout.LayoutCreator;
 
 /**
+ * 
  * @author Joseph Cloutier
  */
 class Layout {
@@ -36,7 +37,7 @@ class Layout {
 	}
 	
 	/**
-	 * The Layout object that will be used (by LayoutUtils and PremadeLayoutUtils)
+	 * The Layout object that will be used (by LayoutCreator and LayoutPreserver)
 	 * if you don't specify one. You may update this at any time. Setting
 	 * this to null will make it default to stageLayout.
 	 */

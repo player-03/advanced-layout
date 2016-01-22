@@ -1,22 +1,33 @@
 package layout;
 
+import flash.text.TextField;
 import layout.item.Edge;
-import layout.item.LayoutItem;
 import layout.item.Position;
 import layout.item.Size;
 import layout.item.TextSize;
 import layout.Resizable;
-import flash.text.TextField;
 
 /**
- * Functions for setting up your layout. This class is designed to be
- * used as a static extension.
+ * Use this class as a static extension. Then, without any further setup, you
+ * can begin calling these functions as if they were instance methods. Sample:
  * 
- * If you are familiar with the original Layout library, you may prefer
- * to use PremadeLayoutUtils.
+ * object0.simpleWidth(30);
+ * object0.simpleHeight(40);
+ * object0.alignBottomRight();
+ * 
+ * object1.simpleScale();
+ * object1.alignCenter();
+ * 
+ * object2.fillWidth();
+ * object2.simpleHeight();
+ * object2.below(object1);
+ * 
+ * Remember: set width and height before setting an object's position. Your
+ * instructions will be run in order, and position often depends on dimensions.
+ * 
  * @author Joseph Cloutier
  */
-class LayoutUtils {
+class LayoutCreator {
 	private static inline function check(layout:Layout):Layout {
 		if(layout == null) {
 			return Layout.currentLayout;
@@ -168,20 +179,6 @@ class LayoutUtils {
 		}
 		
 		layout.add(objectToPlace, Edge.matchOppositeEdges(TOP, margin), target);
-	}
-	
-	//For backwards compatibility.
-	@:noCompletion public static inline function leftOfWithResizing(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
-		fillAreaLeftOf(objectToPlace, target, margin, layout);
-	}
-	@:noCompletion public static inline function rightOfWithResizing(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
-		fillAreaRightOf(objectToPlace, target, margin, layout);
-	}
-	@:noCompletion public static inline function aboveWithResizing(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
-		fillAreaAbove(objectToPlace, target, margin, layout);
-	}
-	@:noCompletion public static inline function belowWithResizing(objectToPlace:Resizable, target:Resizable, ?margin:Float = 0, ?layout:Layout):Void {
-		fillAreaBelow(objectToPlace, target, margin, layout);
 	}
 	
 	//Place objects onstage
