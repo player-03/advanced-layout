@@ -2,8 +2,8 @@
 
 An easy way to create fluid layouts in Flash and OpenFL. There are two main ways to use it:
 
-1. Define your layout using convenience functions. (See [LayoutUtils](#using-layoututils).)
-2. Take a pre-built layout, and make it scale. (See [PremadeLayoutUtils](#using-premadelayoututils).)
+1. Define your layout using convenience functions. (See [LayoutCreator](#using-layoutcreator).)
+2. Take a pre-built layout, and make it scale. (See [LayoutPreserver](#using-layoutpreserver).)
 
 If you're switching from OpenFL's Layout library, [click here](#switching-from-openfls-library).
 
@@ -12,14 +12,14 @@ Installation
 
     haxelib install advanced-layout
 
-Using LayoutUtils
-=================
+Using LayoutCreator
+===================
 
 To get started, add this after your imports:
 
-    using layout.LayoutUtils;
+    using layout.LayoutCreator;
 
-LayoutUtils is a [static extension](http://haxe.org/manual/lf-static-extension.html), so this isn't required, but it makes things easier.
+LayoutCreator is a [static extension](http://haxe.org/manual/lf-static-extension.html), so this isn't required, but it makes things easier.
 
 Scaling
 -------
@@ -120,134 +120,45 @@ Advanced Layout uses an intelligent system to determine whether a given instruct
     //only that part will be replaced.
     myBitmap.above(mySprite);
 
-It's obviously more efficient not to call all these extra functions in the first place, but if for some reason you have to, it won't cause a memory leak.
+It's obviously more efficient not to call extra functions in the first place, but if for some reason you have to, it won't cause a memory leak.
 
-Using PremadeLayoutUtils
-========================
+Using LayoutPreserver
+=====================
 
-As the name implies, PremadeLayoutUtils assumes that you've already arranged your layout. All this class does is make your layout scale with the stage.
+As the name implies, LayoutPreserver assumes that you've already arranged your layout. All this class does is make your layout scale with the stage.
 
 To get started, add this after your import statements:
 
-    using layout.PremadeLayoutUtils;
+    using layout.LayoutPreserver;
 
-PremadeLayoutUtils usage
-------------------------
+As of release 0.6.0, LayoutPreserver can guess how an object should scale. To guess an individual object, use this:
 
-The "fill" functions will cause an object to fill the stage, except for whatever margins the object started with.
+    myObject.preserve();
 
-    //A sample rectangle, taking up half the stage's width
-    //and most of the stage's height.
-    var myRect:Shape = new Shape();
-    myRect.graphics.beginFill(0x000000);
-    myRect.graphics.drawRect(0, 0, stage.stageWidth / 2, stage.stageHeight * 0.8);
-    addChild(myRect);
+If you have a number of objects to scale, but they all have the same parent, you can call preserveChildren() to handle them all at once. Here is how you'd convert the code in OpenFL's SimpleSWFLayout example:
+
+    var clip:MovieClip = Assets.getMovieClip("layout:Layout");
+    addChild(clip);
     
-    //Center the rectangle horizontally. As the stage's
-    //width increases, the rectangle will expand by an equal
-    //amount. (The margins will keep their size.)
-    myRect.x = stage.stageWidth / 2 - myRect.width / 2;
-    myRect.fillWidth();
-    
-    //Place the rectangle on the bottom, so that it takes
-    //up everything except for a small area at the top.
-    myRect.y = stage.stageHeight - myRect.height;
-    myRect.fillHeight();
+    Layout.setStageBaseDimensions(Std.int(clip.width), Std.int(clip.height));
+    clip.preserveChildren();
 
-When you align an object to an edge, the object's current distance from the edge will be maintained.
+LayoutPreserver usage
+---------------------
 
-    //A sample bitmap.
-    var myBitmap:Bitmap = new Bitmap(Assets.getBitmapData("MyBitmap.png"));
-    addChild(myBitmap);
-    
-    //This will cause the bitmap to stay a short distance from
-    //the left.
-    myBitmap.x = 5;
-    myBitmap.alignLeft();
-    
-    //Aligning the bitmap to the right is not recommended
-    //when it's near to the left. If the stage width decreases,
-    //the object will be pushed off the left side.
-    myBitmap.x = 5;
-    myBitmap.alignRight();
-    
-    //Much better!
-    myBitmap.x = stage.stageWidth - myBitmap.width;
-    myBitmap.alignRight();
+If guessing isn't good enough, you can specify how an object should act:
 
-If you align it to the center, its offset from the center will be maintained.
+    //Make the object follow the right edge.
+    myObject.stickToRight();
+	
+	//Make the object follow the left edge. If it's on the right, this
+	//may push it offscreen, or pull it towards the center. (Not pretty!)
+    myObject.stickToLeft();
+	
+	//Tug of war! The object stretches horizontally so that its left edge
+	//follows the screen's left, and its right edge follows the screen's right.
+	myObject.stickToLeftAndRight();
 
-    //Now center it.
-    myBitmap.x = stage.stageWidth / 2 - myBitmap.width / 2;
-    myBitmap.centerX();
-    
-    //Put it a short distance left of the center. When the stage
-    //scales, the bitmap will stay to the left of the center.
-    myBitmap.x = stage.stageWidth / 2 + 50;
-    
-    //Align it to the bottom, but leave a large margin. On a small
-    //stage, it will look like the object is near the center, but
-    //on a tall one, the object will appear much closer to the bottom.
-    myBitmap.y = stage.stageHeight - 200;
-    myBitmap.alignBottom();
+These "stickTo()" functions always preserve whatever margin currentl exists. If an object is fixe pixels from the right, and you call stickToRight(), the object will keep a five-pixel margin (except that the margin will scale slightly as the stage gets wider and narrower).
 
-Unlike in the LayoutUtils class, all of these functions take care of both positioning and scaling. For instance, `centerY()` takes care of vertical scale, and `alignLeft()` takes care of horizontal scale.
-
-Switching from OpenFL's library
--------------------------------
-
-Most of the old layout code can be removed, except for `layout.addItem()`. Remove anything along these lines:
-
-    import layout.LayoutItem;
-    
-    private var layout:Layout;
-    
-    layout = new Layout();
-    
-    layout.resize(stage.stageWidth, stage.stageHeight);
-    
-    stage.addEventListener(Event.RESIZE, stage_onResize);
-
-The only thing you need to add is "`using layout.PremadeLayoutUtils;`" after your imports. Next, go through any instances of `layout.addItem()`:
-
-    //Example from SimpleSWFLayout.
-    layout.addItem (new LayoutItem (clip.getChildByName ("Background"), STRETCH, STRETCH, false, false));
-
-If the first parameter isn't stored in a variable, separate it out:
-
-    var background:DisplayObject = clip.getChildByName("Background");
-    layout.addItem(new LayoutItem(background, STRETCH, STRETCH, false, false));
-
-Next, convert the `verticalPosition` and `horizontalPosition` arguments. Remember, vertical comes first in OpenFL's library:
-
-    //If verticalPosition is STRETCH:
-    background.fillHeight();
-    
-    //If verticalPosition is TOP:
-    background.alignTop();
-    
-    //If verticalPosition is CENTER:
-    background.centerY();
-    
-    //If verticalPosition is BOTTOM:
-    background.alignBottom();
-    
-    //If verticalPosition is NONE, don't do anything.
-
-Horizontal is second:
-
-    //If horizontalPosition is STRETCH:
-    background.fillWidth();
-    
-    //If horizontalPosition is LEFT:
-    background.alignLeft();
-    
-    //If horizontalPosition is CENTER:
-    background.centerX();
-    
-    //If horizontalPosition is RIGHT:
-    background.alignRight();
-    
-    //If horizontalPosition is NONE, don't do anything.
-
-Finally, delete the `layout.addItem()` line, and move on to the next.
+This is how objects get pushed offscreen. If you call stickToLeft() for an object that's on the right, the margin will be enormous (most of the width of the stage). Then when the stage gets narrower, the margin will only get a little narrower, and the object will end up past the right edge.
