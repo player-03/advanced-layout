@@ -8,7 +8,7 @@ import layout.area.Area;
 import haxe.ui.toolkit.core.interfaces.IDisplayObject;
 #end
 #if flixel
-import flixel.FlxObject;
+import flixel.FlxSprite;
 #end
 
 /**
@@ -44,8 +44,8 @@ abstract Resizable(ResizableImpl) from ResizableImpl {
 	}
 	#end
 	#if flixel
-	@:from private static inline function fromFlxObject(flxObject:FlxObject):Resizable {
-		return cast new FlxObjectResizable(flxObject);
+	@:from private static inline function fromFlxSprite(flxSprite:FlxSprite):Resizable {
+		return cast new FlxSpriteResizable(flxSprite);
 	}
 	#end
 	@:from private static inline function fromArea(area:Area):Resizable {
@@ -378,44 +378,60 @@ private class HaxeUIObjectResizable extends ResizableImpl {
 #end
 
 #if flixel
-private class FlxObjectResizable extends ResizableImpl {
-	public var flxObject:FlxObject;
+private class FlxSpriteResizable extends ResizableImpl {
+	public var flxSprite:FlxSprite;
 	
-	public function new(flxObject:FlxObject) {
-		this.flxObject = flxObject;
+	public function new(flxSprite:FlxSprite) {
+		this.flxSprite = flxSprite;
 		super();
 	}
 	
 	private override function get_x():Float {
-		return flxObject.x;
+		return flxSprite.x;
 	}
 	private override function set_x(value:Float):Float {
-		return flxObject.x = value;
+		return flxSprite.x = value;
 	}
 	
 	private override function get_y():Float {
-		return flxObject.y;
+		return flxSprite.y;
 	}
 	private override function set_y(value:Float):Float {
-		return flxObject.y = value;
+		return flxSprite.y = value;
 	}
 	
 	private override function get_width():Float {
-		return flxObject.width;
+		return flxSprite.width;
 	}
 	private override function set_width(value:Float):Float {
-		return flxObject.width = value;
+		//setGraphicSize()
+		flxSprite.scale.x = value / flxSprite.frameWidth;
+		
+		//updateHitbox()
+		flxSprite.width = value;
+		flxSprite.offset.x = (value - flxSprite.frameWidth) * -0.5;
+		flxSprite.origin.x = flxSprite.frameWidth * 0.5;
+		
+		return value;
 	}
 	
 	private override function get_height():Float {
-		return flxObject.height;
+		return flxSprite.height;
 	}
 	private override function set_height(value:Float):Float {
-		return flxObject.height = value;
+		//setGraphicSize()
+		flxSprite.scale.y = value / flxSprite.frameHeight;
+		
+		//updateHitbox()
+		flxSprite.height = value;
+		flxSprite.offset.y = (value - flxSprite.frameHeight) * -0.5;
+		flxSprite.origin.y = flxSprite.frameHeight * 0.5;
+		
+		return value;
 	}
 	
 	private override function get_sourceObject():Dynamic {
-		return flxObject;
+		return flxSprite;
 	}
 }
 #end
