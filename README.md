@@ -5,8 +5,6 @@ An easy way to create fluid layouts in Flash and OpenFL. There are two main ways
 1. Define your layout using convenience functions. (See [LayoutCreator](#using-layoutcreator).)
 2. Take a pre-built layout, and make it scale. (See [LayoutPreserver](#using-layoutpreserver).)
 
-If you're switching from OpenFL's Layout library, [click here](#switching-from-openfls-library).
-
 Installation
 ============
 
