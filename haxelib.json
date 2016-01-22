@@ -4,7 +4,7 @@
 	"license": "MIT",
 	"tags": [],
 	"description": "An easy way to create fluid layouts.",
-	"version": "0.6.0",
+	"version": "0.6.1",
 	"releasenote": "[Breaking changes] Renamed \"Utils\" classes, added an automatic function to preserve existing layouts.",
 	"contributors": [ "player_03" ],
 	"dependencies": {}
