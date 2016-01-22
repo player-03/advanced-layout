@@ -2,6 +2,7 @@ package layout;
 
 import flash.text.TextField;
 import layout.item.Edge;
+import layout.item.LayoutItem.LayoutMask;
 import layout.item.Position;
 import layout.item.Size;
 import layout.item.TextSize;
@@ -325,7 +326,8 @@ class LayoutCreator {
 	
 	/**
 	 * The object will be scaled based on the current scale values. This
-	 * ignores the object's dimensions at the time of calling.
+	 * uses the object's initial dimensions, not the object's dimensions at the
+	 * time of calling.
 	 */
 	public static inline function simpleScale(objectToScale:Resizable, ?layout:Layout):Void {
 		simpleWidth(objectToScale, layout);

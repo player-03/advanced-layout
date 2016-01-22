@@ -3,9 +3,9 @@
 	"url": "http://www.github.com/player-03/advanced-layout",
 	"license": "MIT",
 	"tags": [],
-	"description": "A combination of jgranick/layout and player-03/relative-layout.",
-	"version": "0.5.0",
-	"releasenote": "HTML5 scaling fixes.",
-	"contributors": [ "player_03", "singmajesty" ],
+	"description": "An easy way to create fluid layouts.",
+	"version": "0.6.0",
+	"releasenote": "[Breaking changes] Renamed \"Utils\" classes, added an automatic function to preserve existing layouts.",
+	"contributors": [ "player_03" ],
 	"dependencies": {}
 }

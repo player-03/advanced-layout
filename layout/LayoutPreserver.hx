@@ -1,24 +1,29 @@
 package layout;
 
+import layout.area.Area;
 import layout.item.Position;
 import layout.item.Size;
+import flash.display.DisplayObjectContainer;
 
 /**
  * Use this class if you positioned your objects beforehand, and all you need is
- * to make everything scale. If you still need to position your objects, use
- * LayoutCreator to save a step.
+ * to make everything scale. If you still need to position your objects,
+ * consider using LayoutCreator to save a step.
  * 
  * Use this class as a static extension.
  * 
- * Sample usage: consider an object that you've placed at the bottom of the
- * stage. When the stage scales, you want to update the object's y coordinate
- * so that it's at the new bottom. To do this, call stickToBottom().
+ * Example: consider an object that you've placed at the bottom of the stage.
+ * When the stage scales, you want to update the object's y coordinate so that
+ * it stays at the bottom. To do this, call stickToBottom().
  * 
  * All "stickTo" functions remember how far the object was from the edge (or
  * center). So if the sample object starts five pixels above the bottom, it will
  * remain about five pixels above the bottom as the stage scales. This
  * five-pixel margin will increase as the stage gets bigger, and it will
  * decrease as the stage gets smaller.
+ * 
+ * If you want this class to guess how an object should scale, use the
+ * preserve() function.
  * 
  * @author Joseph Cloutier
  */
@@ -30,6 +35,9 @@ class LayoutPreserver {
 			return layout;
 		}
 	}
+	
+	//Position objects near an edge, and scale them normally
+	//======================================================
 	
 	public static inline function stickToLeft(object:Resizable, ?layout:Layout):Void {
 		layout = check(layout);
@@ -99,30 +107,74 @@ class LayoutPreserver {
 		stickToCenterY(object, layout);
 	}
 	
-	/**
-	 * When the stage scales, the object will stretch to fill the horizontal
-	 * space, minus whatever margins it currently has.
-	 */
+	//Stretch objects to fill the stage (minus any margins)
+	//=====================================================
+	
 	public static inline function stickToLeftAndRight(object:Resizable, ?layout:Layout):Void {
 		layout = check(layout);
 		layout.add(object, Size.widthMinus(layout.scale.baseStageWidth - object.width));
 		layout.add(object, Position.inside(object.x - layout.bounds.x, LEFT));
 	}
-	/**
-	 * When the stage scales, the object will stretch to fill the vertical
-	 * space, minus whatever margins it currently has.
-	 */
 	public static inline function stickToTopAndBottom(object:Resizable, ?layout:Layout):Void {
 		layout = check(layout);
 		layout.add(object, Size.heightMinus(layout.scale.baseStageHeight - object.height));
 		layout.add(object, Position.inside(object.y - layout.bounds.y, TOP));
 	}
-	/**
-	 * When the stage scales, the object will stretch to fill the whole thing,
-	 * minus whatever margins it currently has.
-	 */
 	public static inline function stickToAllSides(object:Resizable, ?layout:Layout):Void {
 		stickToLeftAndRight(object, layout);
 		stickToTopAndBottom(object, layout);
+	}
+	
+	//Intelligent (?) positioning
+	//===========================
+	
+	/**
+	 * Guess which edges the object should stick to, or if it should stick to
+	 * the center, or if it should stretch to fill the stage.
+	 */
+	public static function preserve(object:Resizable, ?layout:Layout):Void {
+		layout = check(layout);
+		var bounds:Area = layout.bounds;
+		
+		if(object.width > bounds.width / 2) {
+			stickToLeftAndRight(object, layout);
+		} else {
+			var leftMargin:Float = object.left - bounds.left;
+			var rightMargin:Float = bounds.right - object.right;
+			var centerDifferenceX:Float = Math.abs(object.centerX - bounds.centerX);
+			
+			if(centerDifferenceX < leftMargin && centerDifferenceX < rightMargin) {
+				stickToCenterX(object, layout);
+			} else if(leftMargin < rightMargin) {
+				stickToLeft(object, layout);
+			} else {
+				stickToRight(object, layout);
+			}
+		}
+		
+		if(object.height > bounds.height / 2) {
+			stickToTopAndBottom(object, layout);
+		} else {
+			var topMargin:Float = object.top - bounds.top;
+			var bottomMargin:Float = bounds.bottom - object.bottom;
+			var centerDifferenceY:Float = Math.abs(object.centerY - bounds.centerY);
+			
+			if(centerDifferenceY < topMargin && centerDifferenceY < bottomMargin) {
+				stickToCenterY(object, layout);
+			} else if(topMargin < bottomMargin) {
+				stickToTop(object, layout);
+			} else {
+				stickToBottom(object, layout);
+			}
+		}
+	}
+	
+	/**
+	 * Guess how to scale all children of the given object.
+	 */
+	public static inline function preserveChildren(parent:DisplayObjectContainer, ?layout:Layout):Void {
+		for(i in 0...parent.numChildren) {
+			preserve(parent.getChildAt(i), layout);
+		}
 	}
 }
