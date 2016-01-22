@@ -158,6 +158,6 @@ If guessing isn't good enough, you can specify how an object should act:
     //follows the screen's left, and its right edge follows the screen's right.
     myObject.stickToLeftAndRight();
 
-These "stickTo()" functions always preserve whatever margin currentl exists. If an object is fixe pixels from the right, and you call stickToRight(), the object will keep a five-pixel margin (except that the margin will scale slightly as the stage gets wider and narrower).
+These "stickTo()" functions always preserve whatever margin currently exists. If an object is fixe pixels from the right, and you call stickToRight(), the object will keep a five-pixel margin (except that the margin will scale slightly as the stage gets wider and narrower).
 
 This is how objects get pushed offscreen. If you call stickToLeft() for an object that's on the right, the margin will be enormous (most of the width of the stage). Then when the stage gets narrower, the margin will only get a little narrower, and the object will end up past the right edge.
