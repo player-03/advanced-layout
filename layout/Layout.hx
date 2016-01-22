@@ -108,31 +108,6 @@ class Layout {
 	}
 	
 	/**
-	 * Creates a new layout object within this one that's bounded in the
-	 * given directions by the given objects.
-	 */
-	public function partition(?leftEdge:Resizable, ?rightEdge:Resizable,
-					?topEdge:Resizable, ?bottomEdge:Resizable):Layout {
-		var subArea:Area = bounds.clone();
-		if(leftEdge != null) {
-			subArea.rightOfWithResizing(leftEdge);
-		}
-		if(rightEdge != null) {
-			subArea.leftOfWithResizing(rightEdge);
-		}
-		if(topEdge != null) {
-			subArea.belowWithResizing(topEdge);
-		}
-		if(bottomEdge != null) {
-			subArea.aboveWithResizing(bottomEdge);
-		}
-		
-		return new Layout(
-			new Scale(Math.round(subArea.width), Math.round(subArea.height), subArea),
-			subArea);
-	}
-	
-	/**
 	 * Adds a layout item, to be applied when the stage is resized and
 	 * when apply() is called. If no "base" object is specified, the
 	 * entire layout area will be used as the base.
