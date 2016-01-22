@@ -17,8 +17,6 @@ To get started, add this after your imports:
 
     using layout.LayoutCreator;
 
-LayoutCreator is a [static extension](http://haxe.org/manual/lf-static-extension.html), so this isn't required, but it makes things easier.
-
 Scaling
 -------
 
@@ -129,6 +127,9 @@ To get started, add this after your import statements:
 
     using layout.LayoutPreserver;
 
+Guessing
+--------
+
 As of release 0.6.0, LayoutPreserver can guess how an object should scale. To guess an individual object, use this:
 
     myObject.preserve();
@@ -141,21 +142,21 @@ If you have a number of objects to scale, but they all have the same parent, you
     Layout.setStageBaseDimensions(Std.int(clip.width), Std.int(clip.height));
     clip.preserveChildren();
 
-LayoutPreserver usage
----------------------
+LayoutPreserver manual usage
+----------------------------
 
 If guessing isn't good enough, you can specify how an object should act:
 
     //Make the object follow the right edge.
     myObject.stickToRight();
-	
-	//Make the object follow the left edge. If it's on the right, this
-	//may push it offscreen, or pull it towards the center. (Not pretty!)
+    
+    //Make the object follow the left edge. If it's on the right, this
+    //may push it offscreen, or pull it towards the center. (Not pretty!)
     myObject.stickToLeft();
-	
-	//Tug of war! The object stretches horizontally so that its left edge
-	//follows the screen's left, and its right edge follows the screen's right.
-	myObject.stickToLeftAndRight();
+    
+    //Tug of war! The object stretches horizontally so that its left edge
+    //follows the screen's left, and its right edge follows the screen's right.
+    myObject.stickToLeftAndRight();
 
 These "stickTo()" functions always preserve whatever margin currentl exists. If an object is fixe pixels from the right, and you call stickToRight(), the object will keep a five-pixel margin (except that the margin will scale slightly as the stage gets wider and narrower).
 
