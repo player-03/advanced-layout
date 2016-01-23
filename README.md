@@ -43,7 +43,7 @@ Scaling
     myBitmap.matchWidth(sprite);
     
     //Scale the bitmap's height so that it isn't distorted.
-    myBitmap.aspectRatio();
+    myBitmap.maintainAspectRatio();
 
 Positioning
 -----------
