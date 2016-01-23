@@ -29,7 +29,7 @@ class StageArea extends Area {
 		super();
 		
 		#if flixel
-			FlxG.signals.gameResized.add(onStageResize);
+			FlxG.signals.gameResized.add(setStageDimensions);
 			FlxG.scaleMode = new StageSizeScaleMode();
 		#else
 			Lib.current.stage.addEventListener(Event.RESIZE, onStageResize, false, 1);
@@ -38,18 +38,18 @@ class StageArea extends Area {
 	}
 	
 	#if flixel
-		private function onStageResize(width:Int, height:Int):Void {
+		private function setStageDimensions(width:Int, height:Int):Void {
 			super.setTo(0, 0, width, height);
 		}
-	#else
-		private function onStageResize(?e:Event):Void {
-			var stage:Stage = Lib.current.stage;
-			
-			if(stage.stageWidth != width || stage.stageHeight != height) {
-				super.setTo(0, 0, stage.stageWidth, stage.stageHeight);
-			}
-		}
 	#end
+	
+	private function onStageResize(?e:Event):Void {
+		var stage:Stage = Lib.current.stage;
+		
+		if(stage.stageWidth != width || stage.stageHeight != height) {
+			super.setTo(0, 0, stage.stageWidth, stage.stageHeight);
+		}
+	}
 	
 	//The boundaries are set automatically and can't otherwise be modified.
 	public override function setTo(x:Float, y:Float, width:Float, height:Float, ?suppressEvent:Bool = false):Void {
