@@ -161,3 +161,34 @@ If guessing isn't good enough, you can specify how an object should act:
 These "stickTo()" functions always preserve whatever margin currently exists. If an object is fixe pixels from the right, and you call stickToRight(), the object will keep a five-pixel margin (except that the margin will scale slightly as the stage gets wider and narrower).
 
 This is how objects get pushed offscreen. If you call stickToLeft() for an object that's on the right, the margin will be enormous (most of the width of the stage). Then when the stage gets narrower, the margin will only get a little narrower, and the object will end up past the right edge.
+
+HaxeFlixel States and Cleanup
+-----------------------------
+
+(Note: The following applies to HaxeFlixel users only.)
+
+When switching from a layout-using FlxState to another FlxState, the instructions that were created need to be cleaned up.  So, in multi-FlxState projects, each FlxState should instantiate a Layout object:
+
+	import layout.Layout;
+	using layout.LayoutCreator;
+
+	//...
+
+	class MyState extends FlxState
+	{
+		private var _layout:Layout;
+		//...
+		override public function create():Void
+		{
+			_layout = new Layout();
+			Layout.currentLayout = _layout;
+			//...
+		}
+		//...
+		override public function destroy():Void
+		{
+			super.destroy();
+			_layout.dispose();
+			Layout.currentLayout = null;
+		}
+	}
