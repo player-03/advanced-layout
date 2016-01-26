@@ -161,3 +161,27 @@ If guessing isn't good enough, you can specify how an object should act:
 These "stickTo()" functions always preserve whatever margin currently exists. If an object is fixe pixels from the right, and you call stickToRight(), the object will keep a five-pixel margin (except that the margin will scale slightly as the stage gets wider and narrower).
 
 This is how objects get pushed offscreen. If you call stickToLeft() for an object that's on the right, the margin will be enormous (most of the width of the stage). Then when the stage gets narrower, the margin will only get a little narrower, and the object will end up past the right edge.
+
+Cleaning up
+===========
+
+If you use the same UI for the entire lifespan of your app, you don't have to worry about cleaning anything up. However, if you want an object to be garbage collected, you'll need to remove Advanced Layout's references to it.
+
+You can remove objects one at a time, if you like:
+
+    Layout.currentLayout.remove(myObject);
+
+This may get tedious if you're trying to dispose of a large number at once. In that case, you'll want to plan ahead. When you first set up these objects, make sure to add them to their own `Layout` object:
+
+    myLayout = new Layout();
+    Layout.currentLayout = myLayout;
+	
+	//Now when you lay out your objects, they'll be associated with myLayout.
+	
+	//...
+	
+	//Once you're done laying out objects, you may want to un-set currentLayout.
+	//Otherwise, a different class may add items to this class's layout.
+	Layout.currentLayout = null;
+
+Now you have a set of objects all associated with `myLayout`. Once you're done with them, simply call `myLayout.dispose()` to clean up Advanced Layout's references.
