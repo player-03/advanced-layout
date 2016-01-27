@@ -108,6 +108,9 @@ class Layout {
 	public function dispose():Void {
 		bounds.removeEventListener(Event.CHANGE, onBoundsChanged);
 		items = null;
+		if(this == currentLayout) {
+			currentLayout = null;
+		}
 	}
 	
 	/**
