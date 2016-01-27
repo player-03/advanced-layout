@@ -17,7 +17,7 @@ import layout.Resizable;
  * object0.alignBottomRight();
  * 
  * object1.simpleScale();
- * object1.alignCenter();
+ * object1.center();
  * 
  * object2.fillWidth();
  * object2.simpleHeight();
