@@ -36,11 +36,12 @@ class TextSize implements LayoutItem {
 		var textField:TextField = target.castDisplayObject(TextField);
 		
 		var format:TextFormat = textField.defaultTextFormat;
-		
 		format.size = getTextSize(scale);
 		
 		textField.defaultTextFormat = format;
-		textField.setTextFormat(format);
+		
+		//When calling setTextFormat(), don't change anything except the size.
+		textField.setTextFormat(new TextFormat(null, format.size));
 	}
 	
 	private function getTextSize(scale:Scale):Int {

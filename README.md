@@ -180,7 +180,7 @@ This may get tedious if you're trying to dispose of a large number at once. In t
 	
 	//...
 	
-	//Once you're done laying out objects, you may want to un-set currentLayout.
+	//Once you're done laying out objects, you'll want to un-set currentLayout.
 	//Otherwise, a different class may add items to this class's layout.
 	Layout.currentLayout = null;
 
