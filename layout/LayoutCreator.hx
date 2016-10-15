@@ -348,6 +348,35 @@ class LayoutCreator {
 		check(layout).add(objectToScale, Size.simpleHeight(height));
 	}
 	
+	/**
+	 * Like simpleScale(), but the object won't go below its initial
+	 * width and height.
+	 */
+	public static inline function rigidSimpleScale(objectToScale:Resizable, ?layout:Layout):Void {
+		rigidSimpleWidth(objectToScale, layout);
+		rigidSimpleHeight(objectToScale, layout);
+	}
+	/**
+	 * Like simpleWidth(), but the object won't go below its initial
+	 * width.
+	 */
+	public static inline function rigidSimpleWidth(objectToScale:Resizable, ?width:Float, ?layout:Layout):Void {
+		if(width == null) {
+			width = objectToScale.baseWidth;
+		}
+		check(layout).add(objectToScale, Size.clampedSimpleWidth(width, width));
+	}
+	/**
+	 * Like simpleHeight(), but the object won't go below its initial
+	 * height.
+	 */
+	public static inline function rigidSimpleHeight(objectToScale:Resizable, ?height:Float, ?layout:Layout):Void {
+		if(height == null) {
+			height = objectToScale.baseHeight;
+		}
+		check(layout).add(objectToScale, Size.clampedSimpleHeight(height, height));
+	}
+	
 	//Scale objects relative to one another
 	//=====================================
 	
@@ -403,6 +432,21 @@ class LayoutCreator {
 	 */
 	public static inline function fillPercentHeight(objectToScale:Resizable, percent:Float, ?layout:Layout):Void {
 		check(layout).add(objectToScale, Size.relativeHeight(percent));
+	}
+	
+	/**
+	 * Like fillPercentWidth(), but the object won't go below its
+	 * initial height.
+	 */
+	public static inline function rigidFillPercentWidth(objectToScale:Resizable, percent:Float, ?layout:Layout):Void {
+		check(layout).add(objectToScale, Size.clampedRelativeWidth(percent, objectToScale.baseWidth));
+	}
+	/**
+	 * Like fillPercentHeight(), but the object won't go below its
+	 * initial height.
+	 */
+	public static inline function rigidFillPercentHeight(objectToScale:Resizable, percent:Float, ?layout:Layout):Void {
+		check(layout).add(objectToScale, Size.clampedRelativeHeight(percent, objectToScale.baseHeight));
 	}
 	
 	//Text size

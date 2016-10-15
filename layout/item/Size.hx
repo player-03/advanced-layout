@@ -75,6 +75,53 @@ class Size implements LayoutItem {
 		return new AspectRatio(adjustWidth);
 	}
 	
+	/**
+	 * Like simpleWidth(), but you can set a minimum and/or maximum width.
+	 */
+	public static inline function clampedSimpleWidth(?width:Float, ?minimum:Float, ?maximum:Float):Size {
+		if(width != null) {
+			return new ClampedSimpleSize(true, width, minimum, maximum);
+		} else {
+			return new ClampedSize(true, minimum, maximum);
+		}
+	}
+	/**
+	 * Like simpleHeight(), but you can set a minimum and/or maximum height.
+	 */
+	public static inline function clampedSimpleHeight(?height:Float, ?minimum:Float, ?maximum:Float):Size {
+		if(height != null) {
+			return new ClampedSimpleSize(false, height, minimum, maximum);
+		} else {
+			return new ClampedSize(false, minimum, maximum);
+		}
+	}
+	
+	/**
+	 * Like relativeWidth(), but you can set a minimum and/or maximum width.
+	 */
+	public static inline function clampedRelativeWidth(percent:Float, ?minimum:Float, ?maximum:Float):Size {
+		return new ClampedRelativeSize(true, percent, minimum, maximum);
+	}
+	/**
+	 * Like relativeHeight(), but you can set a minimum and/or maximum height.
+	 */
+	public static inline function clampedRelativeHeight(percent:Float, ?minimum:Float, ?maximum:Float):Size {
+		return new ClampedRelativeSize(false, percent, minimum, maximum);
+	}
+	
+	/**
+	 * Like widthMinus(), but you can set a minimum and/or maximum width.
+	 */
+	public static inline function clampedWidthMinus(amount:Float, ?minimum:Float, ?maximum:Float):Size {
+		return new ClampedMarginSize(true, amount, minimum, maximum);
+	}
+	/**
+	 * Like heightMinus(), but you can set a minimum and/or maximum height.
+	 */
+	public static inline function clampedHeightMinus(amount:Float, ?minimum:Float, ?maximum:Float):Size {
+		return new ClampedMarginSize(false, amount, minimum, maximum);
+	}
+	
 	private var horizontal:Bool;
 	public var mask:Int;
 	
@@ -135,9 +182,8 @@ private class RelativeSize extends Size {
  */
 private class MarginSize extends Size {
 	/**
-	 * This is only a margin on one side. Normally you'd subtract
-	 * (2 * margin) to add a margin on both sides, but that's not what's
-	 * going on here.
+	 * This is only a margin on one side. Normally a class like this
+	 * would subtract (2 * margin), but this one only subtracts margin.
 	 */
 	private var margin:Float;
 	
@@ -160,9 +206,8 @@ private class MarginSize extends Size {
  */
 private class ExactMarginSize extends Size {
 	/**
-	 * This is only a margin on one side. Normally you'd subtract
-	 * (2 * margin) to add a margin on both sides, but that's not what's
-	 * going on here.
+	 * This is only a margin on one side. Normally a class like this
+	 * would subtract (2 * margin), but this one only subtracts margin.
 	 */
 	private var margin:Float;
 	
@@ -187,5 +232,87 @@ private class AspectRatio extends Size {
 		} else {
 			target.scaleY = target.scaleX;
 		}
+	}
+}
+
+/**
+ * Enforces a minimum and/or maximum size. The minimum defaults to
+ * NEGATIVE_INFINITY, and the maximum defaults to POSITIVE_INFINITY.
+ */
+private class ClampedSize extends Size {
+	private var minimum:Float;
+	private var maximum:Float;
+	
+	public function new(horizontal:Bool, ?minimum:Float, ?maximum:Float) {
+		super(horizontal);
+		
+		if(minimum != null) {
+			this.minimum = minimum;
+		} else {
+			this.minimum = Math.NEGATIVE_INFINITY;
+		}
+		
+		if(maximum != null) {
+			this.maximum = maximum;
+		} else {
+			this.maximum = Math.POSITIVE_INFINITY;
+		}
+	}
+	
+	private override function getSize(targetSize:Float, areaSize:Float, scale:Float):Float {
+		return clamp(targetSize * scale);
+	}
+	
+	private function clamp(size:Float):Float {
+		if(size < minimum) {
+			return minimum;
+		} else if(size > maximum) {
+			return maximum;
+		} else {
+			return size;
+		}
+	}
+}
+
+private class ClampedSimpleSize extends ClampedSize {
+	private var size:Float;
+	
+	public function new(horizontal:Bool, size:Float, ?minimum:Float, ?maximum:Float) {
+		super(horizontal, minimum, maximum);
+		this.size = size;
+	}
+	
+	private override function getSize(targetSize:Float, areaSize:Float, scale:Float):Float {
+		return clamp(size * scale);
+	}
+}
+
+private class ClampedRelativeSize extends ClampedSize {
+	private var percent:Float;
+	
+	public function new(horizontal:Bool, percent:Float, ?minimum:Float, ?maximum:Float) {
+		super(horizontal, minimum, maximum);
+		this.percent = percent;
+	}
+	
+	private override function getSize(targetSize:Float, areaSize:Float, scale:Float):Float {
+		return clamp(areaSize * percent);
+	}
+}
+
+private class ClampedMarginSize extends ClampedSize {
+	/**
+	 * This is only a margin on one side. Normally a class like this
+	 * would subtract (2 * margin), but this one only subtracts margin.
+	 */
+	private var margin:Float;
+	
+	public function new(horizontal:Bool, margin:Float, ?minimum:Float, ?maximum:Float) {
+		super(horizontal, minimum, maximum);
+		this.margin = margin;
+	}
+	
+	private override function getSize(targetSize:Float, areaSize:Float, scale:Float):Float {
+		return clamp(areaSize - margin * scale);
 	}
 }
