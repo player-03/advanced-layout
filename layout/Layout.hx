@@ -66,10 +66,11 @@ class Layout {
 		}
 		
 		if(scale == null) {
-			if(stageScale == null) {
-				get_stageLayout();
+			if(bounds != null) {
+				this.scale = new Scale(Std.int(bounds.width), Std.int(bounds.height), bounds);
+			} else {
+				this.scale = stageLayout.scale;
 			}
-			this.scale = stageScale;
 		} else {
 			this.scale = scale;
 		}
