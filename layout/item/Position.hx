@@ -68,6 +68,14 @@ class Position implements LayoutItem {
 		return new Inside(margin, direction);
 	}
 	
+	/**
+	 * Places the target inside the area, next to the given edge.
+	 * The margin won't go below its initial value.
+	 */
+	public static inline function rigidInside(margin:Float, direction:Direction):Position {
+		return new RigidInside(margin, direction);
+	}
+	
 	private var horizontal:Bool;
 	public var mask:Int;
 	
@@ -179,5 +187,20 @@ private class Outside extends Position {
 		} else {
 			return areaMin + areaSize + margin * scale;
 		}
+	}
+}
+
+/**
+ * Places the target within the area, a short distance from the given
+ * edge. The distance is multiplied by the current scale, unless the
+ * scale is less than 1, in which case it will be treated as 1.
+ */
+private class RigidInside extends Inside {
+	public function new(margin:Float, direction:Direction) {
+		super(margin, direction);
+	}
+	
+	private override function getCoordinate(areaMin:Float, areaSize:Float, targetSize:Float, scale:Float):Float {
+		return super.getCoordinate(areaMin, areaSize, targetSize, scale >= 1 ? scale : 1);
 	}
 }

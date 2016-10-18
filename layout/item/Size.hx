@@ -122,6 +122,19 @@ class Size implements LayoutItem {
 		return new ClampedMarginSize(false, amount, minimum, maximum);
 	}
 	
+	/**
+	 * Like simpleWidth(), but width will not go below its original value.
+	 */
+	public static inline function rigidSimpleWidth(width:Float):Size {
+		return clampedSimpleWidth(width, width);
+	}
+	/**
+	 * Like simpleHeight(), but height will not go below its original value.
+	 */
+	public static inline function rigidSimpleHeight(height:Float):Size {
+		return clampedSimpleHeight(height, height);
+	}
+	
 	private var horizontal:Bool;
 	public var mask:Int;
 	

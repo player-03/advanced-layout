@@ -39,90 +39,128 @@ class LayoutPreserver {
 	//Position objects near an edge, and scale them normally
 	//======================================================
 	
-	public static inline function stickToLeft(object:Resizable, ?layout:Layout):Void {
+	public static inline function stickToLeft(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
 		layout = check(layout);
-		layout.add(object, Size.simpleWidth());
-		layout.add(object, Position.inside(object.x - layout.bounds.x, LEFT));
+		if(rigid) {
+			layout.add(object, Size.rigidSimpleWidth(object.baseWidth));
+			layout.add(object, Position.rigidInside(object.x - layout.bounds.x, LEFT));
+		} else {
+			layout.add(object, Size.simpleWidth());
+			layout.add(object, Position.inside(object.x - layout.bounds.x, LEFT));
+		}
 	}
-	public static inline function stickToRight(object:Resizable, ?layout:Layout):Void {
+	public static inline function stickToRight(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
 		layout = check(layout);
-		layout.add(object, Size.simpleWidth());
-		layout.add(object, Position.inside(layout.scale.baseStageWidth - object.right, RIGHT));
+		if(rigid) {
+			layout.add(object, Size.rigidSimpleWidth(object.baseWidth));
+			layout.add(object, Position.rigidInside(layout.scale.baseStageWidth - object.right, RIGHT));
+		} else {
+			layout.add(object, Size.simpleWidth());
+			layout.add(object, Position.inside(layout.scale.baseStageWidth - object.right, RIGHT));
+		}
 	}
-	public static inline function stickToTop(object:Resizable, ?layout:Layout):Void {
+	public static inline function stickToTop(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
 		layout = check(layout);
-		layout.add(object, Size.simpleHeight());
-		layout.add(object, Position.inside(object.y - layout.bounds.y, TOP));
+		if(rigid) {
+			layout.add(object, Size.rigidSimpleHeight(object.baseHeight));
+			layout.add(object, Position.rigidInside(object.y - layout.bounds.y, TOP));
+		} else {
+			layout.add(object, Size.simpleHeight());
+			layout.add(object, Position.inside(object.y - layout.bounds.y, TOP));
+		}
 	}
-	public static inline function stickToBottom(object:Resizable, ?layout:Layout):Void {
+	public static inline function stickToBottom(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
 		layout = check(layout);
-		layout.add(object, Size.simpleHeight());
-		layout.add(object, Position.inside(layout.scale.baseStageHeight - object.bottom, BOTTOM));
+		if(rigid) {
+			layout.add(object, Size.rigidSimpleHeight(object.baseHeight));
+			layout.add(object, Position.rigidInside(layout.scale.baseStageHeight - object.bottom, BOTTOM));
+		} else {
+			layout.add(object, Size.simpleHeight());
+			layout.add(object, Position.inside(layout.scale.baseStageHeight - object.bottom, BOTTOM));
+		}
 	}
-	public static inline function stickToCenterX(object:Resizable, ?layout:Layout):Void {
+	public static inline function stickToCenterX(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
 		layout = check(layout);
-		layout.add(object, Size.simpleWidth());
+		if(rigid) {
+			layout.add(object, Size.rigidSimpleWidth(object.baseWidth));
+		} else {
+			layout.add(object, Size.simpleWidth());
+		}
 		layout.add(object, Position.offsetFromCenterX(object.x - layout.scale.baseStageWidth / 2));
 	}
-	public static inline function stickToCenterY(object:Resizable, ?layout:Layout):Void {
+	public static inline function stickToCenterY(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
 		layout = check(layout);
-		layout.add(object, Size.simpleHeight());
+		if(rigid) {
+			layout.add(object, Size.rigidSimpleHeight(object.baseHeight));
+		} else {
+			layout.add(object, Size.simpleHeight());
+		}
 		layout.add(object, Position.offsetFromCenterY(object.y - layout.scale.baseStageHeight / 2));
 	}
 	
-	public static inline function stickToTopLeft(object:Resizable, ?layout:Layout):Void {
-		stickToLeft(object, layout);
-		stickToTop(object, layout);
+	public static inline function stickToTopLeft(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		stickToLeft(object, rigid, layout);
+		stickToTop(object, rigid, layout);
 	}
-	public static inline function stickToTopRight(object:Resizable, ?layout:Layout):Void {
-		stickToRight(object, layout);
-		stickToTop(object, layout);
+	public static inline function stickToTopRight(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		stickToRight(object, rigid, layout);
+		stickToTop(object, rigid, layout);
 	}
-	public static inline function stickToBottomLeft(object:Resizable, ?layout:Layout):Void {
-		stickToLeft(object, layout);
-		stickToBottom(object, layout);
+	public static inline function stickToBottomLeft(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		stickToLeft(object, rigid, layout);
+		stickToBottom(object, rigid, layout);
 	}
-	public static inline function stickToBottomRight(object:Resizable, ?layout:Layout):Void {
-		stickToRight(object, layout);
-		stickToBottom(object, layout);
+	public static inline function stickToBottomRight(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		stickToRight(object, rigid, layout);
+		stickToBottom(object, rigid, layout);
 	}
-	public static inline function stickToLeftCenter(object:Resizable, ?layout:Layout):Void {
-		stickToLeft(object, layout);
-		stickToCenterY(object, layout);
+	public static inline function stickToLeftCenter(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		stickToLeft(object, rigid, layout);
+		stickToCenterY(object, rigid, layout);
 	}
-	public static inline function stickToRightCenter(object:Resizable, ?layout:Layout):Void {
-		stickToRight(object, layout);
-		stickToCenterY(object, layout);
+	public static inline function stickToRightCenter(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		stickToRight(object, rigid, layout);
+		stickToCenterY(object, rigid, layout);
 	}
-	public static inline function stickToTopCenter(object:Resizable, ?layout:Layout):Void {
-		stickToCenterX(object, layout);
-		stickToTop(object, layout);
+	public static inline function stickToTopCenter(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		stickToCenterX(object, rigid, layout);
+		stickToTop(object, rigid, layout);
 	}
-	public static inline function stickToBottomCenter(object:Resizable, ?layout:Layout):Void {
-		stickToCenterX(object, layout);
-		stickToBottom(object, layout);
+	public static inline function stickToBottomCenter(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		stickToCenterX(object, rigid, layout);
+		stickToBottom(object, rigid, layout);
 	}
-	public static inline function stickToCenter(object:Resizable, ?layout:Layout):Void {
-		stickToCenterX(object, layout);
-		stickToCenterY(object, layout);
+	public static inline function stickToCenter(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		stickToCenterX(object, rigid, layout);
+		stickToCenterY(object, rigid, layout);
 	}
 	
 	//Stretch objects to fill the stage (minus any margins)
 	//=====================================================
 	
-	public static inline function stickToLeftAndRight(object:Resizable, ?layout:Layout):Void {
+	public static function stickToLeftAndRight(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
 		layout = check(layout);
-		layout.add(object, Size.widthMinus(layout.scale.baseStageWidth - object.width));
-		layout.add(object, Position.inside(object.x - layout.bounds.x, LEFT));
+		if(rigid) {
+			layout.add(object, Size.clampedWidthMinus(layout.scale.baseStageWidth - object.width, object.baseWidth));
+			layout.add(object, Position.rigidInside(object.x - layout.bounds.x, LEFT));
+		} else {
+			layout.add(object, Size.widthMinus(layout.scale.baseStageWidth - object.width));
+			layout.add(object, Position.inside(object.x - layout.bounds.x, LEFT));
+		}
 	}
-	public static inline function stickToTopAndBottom(object:Resizable, ?layout:Layout):Void {
+	public static inline function stickToTopAndBottom(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
 		layout = check(layout);
-		layout.add(object, Size.heightMinus(layout.scale.baseStageHeight - object.height));
-		layout.add(object, Position.inside(object.y - layout.bounds.y, TOP));
+		if(rigid) {
+			layout.add(object, Size.clampedHeightMinus(layout.scale.baseStageHeight - object.height, object.baseHeight));
+			layout.add(object, Position.rigidInside(object.y - layout.bounds.y, TOP));
+		} else {
+			layout.add(object, Size.heightMinus(layout.scale.baseStageHeight - object.height));
+			layout.add(object, Position.inside(object.y - layout.bounds.y, TOP));
+		}
 	}
-	public static inline function stickToAllSides(object:Resizable, ?layout:Layout):Void {
-		stickToLeftAndRight(object, layout);
-		stickToTopAndBottom(object, layout);
+	public static inline function stickToAllSides(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		stickToLeftAndRight(object, rigid, layout);
+		stickToTopAndBottom(object, rigid, layout);
 	}
 	
 	//Intelligent (?) positioning
@@ -132,39 +170,39 @@ class LayoutPreserver {
 	 * Guess which edges the object should stick to, or if it should stick to
 	 * the center, or if it should stretch to fill the stage.
 	 */
-	public static function preserve(object:Resizable, ?layout:Layout):Void {
+	public static function preserve(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
 		layout = check(layout);
 		var bounds:Area = layout.bounds;
 		
 		if(object.width > bounds.width / 2) {
-			stickToLeftAndRight(object, layout);
+			stickToLeftAndRight(object, rigid, layout);
 		} else {
 			var leftMargin:Float = object.left - bounds.left;
 			var rightMargin:Float = bounds.right - object.right;
 			var centerDifferenceX:Float = Math.abs(object.centerX - bounds.centerX);
 			
 			if(centerDifferenceX < leftMargin && centerDifferenceX < rightMargin) {
-				stickToCenterX(object, layout);
+				stickToCenterX(object, rigid, layout);
 			} else if(leftMargin < rightMargin) {
-				stickToLeft(object, layout);
+				stickToLeft(object, rigid, layout);
 			} else {
-				stickToRight(object, layout);
+				stickToRight(object, rigid, layout);
 			}
 		}
 		
 		if(object.height > bounds.height / 2) {
-			stickToTopAndBottom(object, layout);
+			stickToTopAndBottom(object, rigid, layout);
 		} else {
 			var topMargin:Float = object.top - bounds.top;
 			var bottomMargin:Float = bounds.bottom - object.bottom;
 			var centerDifferenceY:Float = Math.abs(object.centerY - bounds.centerY);
 			
 			if(centerDifferenceY < topMargin && centerDifferenceY < bottomMargin) {
-				stickToCenterY(object, layout);
+				stickToCenterY(object, rigid, layout);
 			} else if(topMargin < bottomMargin) {
-				stickToTop(object, layout);
+				stickToTop(object, rigid, layout);
 			} else {
-				stickToBottom(object, layout);
+				stickToBottom(object, rigid, layout);
 			}
 		}
 	}
@@ -172,9 +210,9 @@ class LayoutPreserver {
 	/**
 	 * Guess how to scale all children of the given object.
 	 */
-	public static inline function preserveChildren(parent:DisplayObjectContainer, ?layout:Layout):Void {
+	public static inline function preserveChildren(parent:DisplayObjectContainer, ?rigid:Bool = false, ?layout:Layout):Void {
 		for(i in 0...parent.numChildren) {
-			preserve(parent.getChildAt(i), layout);
+			preserve(parent.getChildAt(i), rigid, layout);
 		}
 	}
 }
