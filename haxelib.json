@@ -4,8 +4,8 @@
 	"license": "MIT",
 	"tags": [],
 	"description": "An easy way to create fluid layouts.",
-	"version": "0.7.0",
-	"releasenote": "Added \"rigid\" scaling.",
+	"version": "0.8.0",
+	"releasenote": "Reorganized classes.",
 	"contributors": [ "player_03" ],
 	"dependencies": {}
 }

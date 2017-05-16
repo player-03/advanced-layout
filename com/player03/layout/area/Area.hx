@@ -1,4 +1,4 @@
-package layout.area;
+package com.player03.layout.area;
 
 import flash.events.Event;
 import flash.events.EventDispatcher;
@@ -10,7 +10,7 @@ import flash.events.EventDispatcher;
  * After the area changes for any reason, it will dispatch a CHANGE event.
  * @author Joseph Cloutier
  */
-@:allow(layout.Scale)
+@:allow(com.player03.layout.Scale)
 class Area extends EventDispatcher {
 	public var x(default, set):Float;
 	public var y(default, set):Float;

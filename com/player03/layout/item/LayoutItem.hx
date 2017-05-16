@@ -1,7 +1,7 @@
-package layout.item;
+package com.player03.layout.item;
 
-import layout.Scale;
-import layout.Resizable;
+import com.player03.layout.Scale;
+import com.player03.layout.Resizable;
 
 /**
  * @author Joseph Cloutier

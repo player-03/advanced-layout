@@ -1,8 +1,8 @@
-package layout;
+package com.player03.layout;
 
 import flash.display.DisplayObject;
 import flash.geom.Rectangle;
-import layout.area.Area;
+import com.player03.layout.area.Area;
 
 #if haxeui
 import haxe.ui.toolkit.core.interfaces.IDisplayObject;

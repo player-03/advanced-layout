@@ -1,4 +1,4 @@
-package layout.area;
+package com.player03.layout.area;
 
 import flash.events.Event;
 import flash.events.EventDispatcher;
@@ -15,7 +15,7 @@ import flixel.system.scaleModes.StageSizeScaleMode;
  * instantiating it yourself.
  * @author Joseph Cloutier
  */
-@:allow(layout.Layout)
+@:allow(com.player03.layout.Layout)
 class StageArea extends Area {
 	public static var instance(get, null):StageArea;
 	private static function get_instance():StageArea {

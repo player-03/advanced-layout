@@ -1,8 +1,8 @@
-package layout;
+package com.player03.layout;
 
-import layout.area.Area;
-import layout.area.StageArea;
-import layout.Direction;
+import com.player03.layout.area.Area;
+import com.player03.layout.area.StageArea;
+import com.player03.layout.Direction;
 import flash.events.Event;
 import flash.Lib;
 
@@ -43,8 +43,8 @@ import openfl.system.Capabilities;
  * might get cut off. Call Scale.aspectRatioWithCropping() to enable this.
  * @author Joseph Cloutier
  */
-@:allow(layout.ScaleBehavior)
-@:allow(layout.Layout)
+@:allow(com.player03.layout.ScaleBehavior)
+@:allow(com.player03.layout.Layout)
 class Scale {
 	public static var stageScale(get, never):Scale;
 	private static inline function get_stageScale():Scale {

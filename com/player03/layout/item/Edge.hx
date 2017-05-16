@@ -1,12 +1,12 @@
-package layout.item;
+package com.player03.layout.item;
 
-import layout.Direction;
-import layout.item.LayoutItem.LayoutMask;
-import layout.Resizable;
-import layout.Scale;
+import com.player03.layout.Direction;
+import com.player03.layout.item.LayoutItem.LayoutMask;
+import com.player03.layout.Resizable;
+import com.player03.layout.Scale;
 import flash.display.DisplayObject;
 
-using layout.Direction.DirectionUtils;
+using com.player03.layout.Direction.DirectionUtils;
 
 /**
  * The Edge class moves one of an object's edges at a time. This causes

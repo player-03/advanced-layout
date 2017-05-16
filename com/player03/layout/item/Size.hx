@@ -1,7 +1,7 @@
-package layout.item;
+package com.player03.layout.item;
 
-import layout.item.LayoutItem.LayoutMask;
-import layout.Resizable;
+import com.player03.layout.item.LayoutItem.LayoutMask;
+import com.player03.layout.Resizable;
 
 /**
  * Each Size value represents size along only one axis. You will have to use
