@@ -86,7 +86,7 @@ class LayoutPreserver {
 		} else {
 			layout.add(object, Size.simpleWidth());
 		}
-		layout.add(object, Position.offsetFromCenterX(object.x - layout.scale.baseStageWidth / 2));
+		layout.add(object, Position.offsetFromCenterX(object.x + object.width / 2 - layout.scale.baseStageWidth / 2));
 	}
 	public static inline function stickToCenterY(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
 		layout = check(layout);
@@ -95,7 +95,7 @@ class LayoutPreserver {
 		} else {
 			layout.add(object, Size.simpleHeight());
 		}
-		layout.add(object, Position.offsetFromCenterY(object.y - layout.scale.baseStageHeight / 2));
+		layout.add(object, Position.offsetFromCenterY(object.y + object.height / 2 - layout.scale.baseStageHeight / 2));
 	}
 	
 	public static inline function stickToTopLeft(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
