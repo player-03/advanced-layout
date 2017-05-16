@@ -5,6 +5,8 @@ An easy way to create fluid layouts in Flash and OpenFL. There are two main ways
 1. Define your layout using convenience functions. (See [LayoutCreator](#using-layoutcreator).)
 2. Take a pre-built layout, and make it scale. (See [LayoutPreserver](#using-layoutpreserver).)
 
+For a slower introduction to this library and the philosophy behind it, check out [my blog post](https://player03.com/2017/05/16/advanced-layout/).
+
 Installation
 ============
 
@@ -139,7 +141,6 @@ If you have a number of objects to scale, but they all have the same parent, you
     var clip:MovieClip = Assets.getMovieClip("layout:Layout");
     addChild(clip);
     
-    Layout.setStageBaseDimensions(Std.int(clip.width), Std.int(clip.height));
     clip.preserveChildren();
 
 LayoutPreserver manual usage
