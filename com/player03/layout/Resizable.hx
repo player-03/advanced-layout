@@ -18,6 +18,7 @@ import flixel.FlxSprite;
 	 * DisplayObject (Flash/OpenFL)
 	 * Rectangle (Flash/OpenFL)
 	 * DisplayObject (HaxeUI)
+	 * FlxSprite (Flixel)
 	 * Custom classes that extend ResizableImpl
  */
 @:forward(x, y, width, height, baseWidth, baseHeight, left, right, top, bottom)
