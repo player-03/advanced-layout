@@ -456,31 +456,31 @@ private class HaxePunkEntityResizable extends ResizableImpl {
 	}
 	
 	private override function get_x():Float {
-		return entity.x;
+		return entity.localX;
 	}
 	private override function set_x(value:Float):Float {
-		return entity.x = value;
+		return entity.localX = value;
 	}
 	
 	private override function get_y():Float {
-		return entity.y;
+		return entity.localY;
 	}
 	private override function set_y(value:Float):Float {
-		return entity.y = value;
+		return entity.localY = value;
 	}
 	
 	private override function get_width():Float {
 		return entity.width;
 	}
 	private override function set_width(value:Float):Float {
-		return entity.width = value;
+		return entity.width = Math.round(value);
 	}
 	
 	private override function get_height():Float {
 		return entity.height;
 	}
 	private override function set_height(value:Float):Float {
-		return entity.height = value;
+		return entity.height = Math.round(value);
 	}
 	
 	private override function get_sourceObject():Dynamic {
