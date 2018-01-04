@@ -59,20 +59,22 @@ class Scale {
 	 */
 	public var average(get, never):Float;
 	
-	public var baseStageWidth:Int;
-	public var baseStageHeight:Int;
+	public var baseWidth:Int;
+	public var baseHeight:Int;
 	
 	/**
-	 * @param	baseStageWidth The stage width you're using for testing.
-	 * @param	baseStageHeight The stage height you're using for testing.
+	 * @param	baseWidth The initial width of the layout. Scaling will be
+	 * determined by dividing the current width by baseWidth.
+	 * @param	baseHeight The initial height of the layout. Scaling will
+	 * be determined by dividing the current height by baseHeight.
 	 * @param	area If you want to use something besides the stage
 	 * boundaries to calculate scale, specify it here. In most cases this
 	 * won't be necessary.
 	 */
-	public function new(?baseStageWidth:Int = 800, ?baseStageHeight:Int = 600,
+	public function new(?baseWidth:Int = 800, ?baseHeight:Int = 600,
 						?area:Area) {
-		this.baseStageWidth = baseStageWidth;
-		this.baseStageHeight = baseStageHeight;
+		this.baseWidth = baseWidth;
+		this.baseHeight = baseHeight;
 		this.area = area != null ? area : StageArea.instance;
 		
 		aspectRatio();
@@ -187,7 +189,7 @@ private class WidthScale extends ScaleBehavior {
 	}
 	
 	public override function onResize(stageWidth:Int, stageHeight:Int, scale:Scale):Void {
-		scale.x = stageWidth / scale.baseStageWidth;
+		scale.x = stageWidth / scale.baseWidth;
 		scale.y = scale.x;
 	}
 }
@@ -201,7 +203,7 @@ class HeightScale extends ScaleBehavior {
 	}
 	
 	public override function onResize(stageWidth:Int, stageHeight:Int, scale:Scale):Void {
-		scale.x = stageHeight / scale.baseStageHeight;
+		scale.x = stageHeight / scale.baseHeight;
 		scale.y = scale.x;
 	}
 }
@@ -213,8 +215,8 @@ class ExactFitScale extends ScaleBehavior {
 	}
 	
 	public override function onResize(stageWidth:Int, stageHeight:Int, scale:Scale):Void {
-		scale.x = stageWidth / scale.baseStageWidth;
-		scale.y = stageHeight / scale.baseStageHeight;
+		scale.x = stageWidth / scale.baseWidth;
+		scale.y = stageHeight / scale.baseHeight;
 	}
 }
 
@@ -224,8 +226,8 @@ class ShowAllScale extends ScaleBehavior {
 	}
 	
 	public override function onResize(stageWidth:Int, stageHeight:Int, scale:Scale):Void {
-		scale.x = Math.min(stageWidth / scale.baseStageWidth,
-							stageHeight / scale.baseStageHeight);
+		scale.x = Math.min(stageWidth / scale.baseWidth,
+							stageHeight / scale.baseHeight);
 		scale.y = scale.x;
 	}
 }
@@ -236,8 +238,8 @@ class NoBorderScale extends ScaleBehavior {
 	}
 	
 	public override function onResize(stageWidth:Int, stageHeight:Int, scale:Scale):Void {
-		scale.x = Math.max(stageWidth / scale.baseStageWidth,
-							stageHeight / scale.baseStageHeight);
+		scale.x = Math.max(stageWidth / scale.baseWidth,
+							stageHeight / scale.baseHeight);
 		scale.y = scale.x;
 	}
 }

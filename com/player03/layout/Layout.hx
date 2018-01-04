@@ -30,8 +30,8 @@ class Layout {
 			get_stageLayout();
 		}
 		
-		stageScale.baseStageWidth = width;
-		stageScale.baseStageHeight = height;
+		stageScale.baseWidth = width;
+		stageScale.baseHeight = height;
 		stageScale.onResize();
 		StageArea.instance.onStageResize();
 	}

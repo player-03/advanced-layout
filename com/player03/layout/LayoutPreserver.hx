@@ -43,40 +43,40 @@ class LayoutPreserver {
 		layout = check(layout);
 		if(rigid) {
 			layout.add(object, Size.rigidSimpleWidth(object.baseWidth));
-			layout.add(object, Position.rigidInside(object.x - layout.bounds.x, LEFT));
+			layout.add(object, Position.rigidInside(object.x, LEFT));
 		} else {
 			layout.add(object, Size.simpleWidth());
-			layout.add(object, Position.inside(object.x - layout.bounds.x, LEFT));
+			layout.add(object, Position.inside(object.x, LEFT));
 		}
 	}
 	public static inline function stickToRight(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
 		layout = check(layout);
 		if(rigid) {
 			layout.add(object, Size.rigidSimpleWidth(object.baseWidth));
-			layout.add(object, Position.rigidInside(layout.scale.baseStageWidth - object.right, RIGHT));
+			layout.add(object, Position.rigidInside(layout.scale.baseWidth - object.right, RIGHT));
 		} else {
 			layout.add(object, Size.simpleWidth());
-			layout.add(object, Position.inside(layout.scale.baseStageWidth - object.right, RIGHT));
+			layout.add(object, Position.inside(layout.scale.baseWidth - object.right, RIGHT));
 		}
 	}
 	public static inline function stickToTop(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
 		layout = check(layout);
 		if(rigid) {
 			layout.add(object, Size.rigidSimpleHeight(object.baseHeight));
-			layout.add(object, Position.rigidInside(object.y - layout.bounds.y, TOP));
+			layout.add(object, Position.rigidInside(object.y, TOP));
 		} else {
 			layout.add(object, Size.simpleHeight());
-			layout.add(object, Position.inside(object.y - layout.bounds.y, TOP));
+			layout.add(object, Position.inside(object.y, TOP));
 		}
 	}
 	public static inline function stickToBottom(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
 		layout = check(layout);
 		if(rigid) {
 			layout.add(object, Size.rigidSimpleHeight(object.baseHeight));
-			layout.add(object, Position.rigidInside(layout.scale.baseStageHeight - object.bottom, BOTTOM));
+			layout.add(object, Position.rigidInside(layout.scale.baseHeight - object.bottom, BOTTOM));
 		} else {
 			layout.add(object, Size.simpleHeight());
-			layout.add(object, Position.inside(layout.scale.baseStageHeight - object.bottom, BOTTOM));
+			layout.add(object, Position.inside(layout.scale.baseHeight - object.bottom, BOTTOM));
 		}
 	}
 	public static inline function stickToCenterX(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
@@ -86,7 +86,7 @@ class LayoutPreserver {
 		} else {
 			layout.add(object, Size.simpleWidth());
 		}
-		layout.add(object, Position.offsetFromCenterX(object.x + object.width / 2 - layout.scale.baseStageWidth / 2));
+		layout.add(object, Position.offsetFromCenterX(object.x + object.baseWidth / 2 - layout.scale.baseWidth / 2));
 	}
 	public static inline function stickToCenterY(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
 		layout = check(layout);
@@ -95,7 +95,7 @@ class LayoutPreserver {
 		} else {
 			layout.add(object, Size.simpleHeight());
 		}
-		layout.add(object, Position.offsetFromCenterY(object.y + object.height / 2 - layout.scale.baseStageHeight / 2));
+		layout.add(object, Position.offsetFromCenterY(object.y + object.baseHeight / 2 - layout.scale.baseHeight / 2));
 	}
 	
 	public static inline function stickToTopLeft(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
@@ -141,21 +141,21 @@ class LayoutPreserver {
 	public static function stickToLeftAndRight(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
 		layout = check(layout);
 		if(rigid) {
-			layout.add(object, Size.clampedWidthMinus(layout.scale.baseStageWidth - object.width, object.baseWidth));
-			layout.add(object, Position.rigidInside(object.x - layout.bounds.x, LEFT));
+			layout.add(object, Size.clampedWidthMinus(layout.scale.baseWidth - object.width, object.baseWidth));
+			layout.add(object, Position.rigidInside(object.x, LEFT));
 		} else {
-			layout.add(object, Size.widthMinus(layout.scale.baseStageWidth - object.width));
-			layout.add(object, Position.inside(object.x - layout.bounds.x, LEFT));
+			layout.add(object, Size.widthMinus(layout.scale.baseWidth - object.width));
+			layout.add(object, Position.inside(object.x, LEFT));
 		}
 	}
 	public static inline function stickToTopAndBottom(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
 		layout = check(layout);
 		if(rigid) {
-			layout.add(object, Size.clampedHeightMinus(layout.scale.baseStageHeight - object.height, object.baseHeight));
-			layout.add(object, Position.rigidInside(object.y - layout.bounds.y, TOP));
+			layout.add(object, Size.clampedHeightMinus(layout.scale.baseHeight - object.height, object.baseHeight));
+			layout.add(object, Position.rigidInside(object.y, TOP));
 		} else {
-			layout.add(object, Size.heightMinus(layout.scale.baseStageHeight - object.height));
-			layout.add(object, Position.inside(object.y - layout.bounds.y, TOP));
+			layout.add(object, Size.heightMinus(layout.scale.baseHeight - object.height));
+			layout.add(object, Position.inside(object.y, TOP));
 		}
 	}
 	public static inline function stickToAllSides(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
@@ -172,14 +172,13 @@ class LayoutPreserver {
 	 */
 	public static function preserve(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
 		layout = check(layout);
-		var bounds:Area = layout.bounds;
 		
-		if(object.width > bounds.width / 2) {
+		if(object.baseWidth > layout.scale.baseWidth / 2) {
 			stickToLeftAndRight(object, rigid, layout);
 		} else {
-			var leftMargin:Float = object.left - bounds.left;
-			var rightMargin:Float = bounds.right - object.right;
-			var centerDifferenceX:Float = Math.abs(object.centerX - bounds.centerX);
+			var leftMargin:Float = object.left;
+			var rightMargin:Float = layout.scale.baseWidth - object.right;
+			var centerDifferenceX:Float = Math.abs(object.centerX - layout.scale.baseWidth / 2);
 			
 			if(centerDifferenceX < leftMargin && centerDifferenceX < rightMargin) {
 				stickToCenterX(object, rigid, layout);
@@ -190,12 +189,12 @@ class LayoutPreserver {
 			}
 		}
 		
-		if(object.height > bounds.height / 2) {
+		if(object.baseHeight > layout.scale.baseHeight / 2) {
 			stickToTopAndBottom(object, rigid, layout);
 		} else {
-			var topMargin:Float = object.top - bounds.top;
-			var bottomMargin:Float = bounds.bottom - object.bottom;
-			var centerDifferenceY:Float = Math.abs(object.centerY - bounds.centerY);
+			var topMargin:Float = object.top;
+			var bottomMargin:Float = layout.scale.baseHeight - object.bottom;
+			var centerDifferenceY:Float = Math.abs(object.centerY - layout.scale.baseHeight / 2);
 			
 			if(centerDifferenceY < topMargin && centerDifferenceY < bottomMargin) {
 				stickToCenterY(object, rigid, layout);
