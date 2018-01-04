@@ -10,6 +10,9 @@ import haxe.ui.toolkit.core.interfaces.IDisplayObject;
 #if flixel
 import flixel.FlxSprite;
 #end
+#if haxepunk
+import haxepunk.Entity;
+#end
 
 /**
  * Represents an object with position, width, and height. The following
@@ -19,6 +22,7 @@ import flixel.FlxSprite;
 	 * Rectangle (Flash/OpenFL)
 	 * DisplayObject (HaxeUI)
 	 * FlxSprite (Flixel)
+	 * Entity (HaxePunk)
 	 * Custom classes that extend ResizableImpl
  */
 @:forward(x, y, width, height, baseWidth, baseHeight, left, right, top, bottom)
@@ -47,6 +51,11 @@ abstract Resizable(ResizableImpl) from ResizableImpl {
 	#if flixel
 	@:from private static inline function fromFlxSprite(flxSprite:FlxSprite):Resizable {
 		return cast new FlxSpriteResizable(flxSprite);
+	}
+	#end
+	#if haxepunk
+	@:from private static inline function fromHaxePunkEntity(entity:Entity):Resizable {
+		return cast new HaxePunkEntityResizable(entity);
 	}
 	#end
 	@:from private static inline function fromArea(area:Area):Resizable {
@@ -433,6 +442,49 @@ private class FlxSpriteResizable extends ResizableImpl {
 	
 	private override function get_sourceObject():Dynamic {
 		return flxSprite;
+	}
+}
+#end
+
+#if haxepunk
+private class HaxePunkEntityResizable extends ResizableImpl {
+	public var entity:Entity;
+	
+	public function new(entity:Entity) {
+		this.entity = entity;
+		super();
+	}
+	
+	private override function get_x():Float {
+		return entity.localX;
+	}
+	private override function set_x(value:Float):Float {
+		return entity.localX = value;
+	}
+	
+	private override function get_y():Float {
+		return entity.localY;
+	}
+	private override function set_y(value:Float):Float {
+		return entity.localY = value;
+	}
+	
+	private override function get_width():Float {
+		return entity.width;
+	}
+	private override function set_width(value:Float):Float {
+		return entity.width = Math.round(value);
+	}
+	
+	private override function get_height():Float {
+		return entity.height;
+	}
+	private override function set_height(value:Float):Float {
+		return entity.height = Math.round(value);
+	}
+	
+	private override function get_sourceObject():Dynamic {
+		return entity;
 	}
 }
 #end
