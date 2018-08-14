@@ -347,6 +347,18 @@ class LayoutCreator {
 	public static inline function simpleHeight(objectToScale:Resizable, ?height:Float, ?layout:Layout):Void {
 		check(layout).add(objectToScale, Size.simpleHeight(height));
 	}
+	/**
+	 * Sets the object's width to an exact size times Scale.scaleX.
+	 */
+	public static inline function exactWidth(objectToScale:Resizable, width:Float, ?layout:Layout):Void {
+		check(layout).add(objectToScale, Size.clampedSimpleWidth(width, width, width));
+	}
+	/**
+	 * Sets the object's height to an exact size times Scale.scaleX.
+	 */
+	public static inline function exactHeight(objectToScale:Resizable, height:Float, ?layout:Layout):Void {
+		check(layout).add(objectToScale, Size.clampedSimpleHeight(height, height, height));
+	}
 	
 	/**
 	 * Like simpleScale(), but the object won't go below its initial
