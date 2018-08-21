@@ -8,7 +8,7 @@ import flash.Lib;
 
 #if openfl
 import openfl.system.Capabilities;
-import lime.system.Display;
+import lime.app.Application;
 #end
 
 /**
@@ -262,7 +262,7 @@ class DPIScale extends ScaleBehavior {
 	}
 	
 	public override function onResize(stageWidth:Int, stageHeight:Int, scale:Scale):Void {
-		scale.x = (smart ? Capabilities.screenDPI : Display.dpi) / baseDPI;
+		scale.x = (smart ? Capabilities.screenDPI : Application.current.window.display.dpi) / baseDPI;
 		scale.y = scale.x;
 	}
 }
