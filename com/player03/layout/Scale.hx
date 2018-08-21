@@ -8,6 +8,7 @@ import flash.Lib;
 
 #if openfl
 import openfl.system.Capabilities;
+import lime.system.Display;
 #end
 
 /**
@@ -147,9 +148,13 @@ class Scale {
 		 * @param	baseDPI The pixels per inch of the device you're
 		 * testing on. The default is 160 because that's what Android
 		 * considers to be "medium" density.
+		 * @param	smart Whether to adjust the scale based on how
+		 * large users may expect things to appear onscreen. For
+		 * instance, desktop users with higher resolution screens may
+		 * expect things to look smaller. Defaults to true.
 		 */
-		public function screenDPI(?baseDPI:Int = 160):Void {
-			behavior = new DPIScale(baseDPI);
+		public function screenDPI(?baseDPI:Int = 160, ?smart:Bool = true):Void {
+			behavior = new DPIScale(baseDPI, smart);
 			area.dispatchEvent(new Event(Event.CHANGE));
 		}
 	#end
@@ -247,15 +252,17 @@ class NoBorderScale extends ScaleBehavior {
 #if (openfl && !flash)
 class DPIScale extends ScaleBehavior {
 	private var baseDPI:Float;
+	private var smart:Bool;
 	
-	public function new(baseDPI:Float) {
+	public function new(baseDPI:Float, smart:Bool) {
 		super();
 		
 		this.baseDPI = baseDPI;
+		this.smart = smart;
 	}
 	
 	public override function onResize(stageWidth:Int, stageHeight:Int, scale:Scale):Void {
-		scale.x = Capabilities.screenDPI / baseDPI;
+		scale.x = (smart ? Capabilities.screenDPI : Display.dpi) / baseDPI;
 		scale.y = scale.x;
 	}
 }
