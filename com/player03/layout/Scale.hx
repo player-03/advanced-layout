@@ -119,15 +119,15 @@ class Scale {
 		behavior = null;
 	}
 	/**
-	 * Fills the stage. Does not maintain aspect ratio. This is the
-	 * default behavior.
+	 * Fills the stage. Does not maintain aspect ratio.
 	 */
 	public inline function stretch():Void {
 		behavior = new ExactFitScale();
 	}
 	/**
 	 * Makes everything as large as possible while maintaining aspect
-	 * ratio and fitting onstage. Some space may be left empty.
+	 * ratio and fitting onstage. Some space may be left empty. This is
+	 * the default behavior.
 	 */
 	public inline function aspectRatio():Void {
 		behavior = new ShowAllScale();
