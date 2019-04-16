@@ -52,7 +52,7 @@ class TextSize implements LayoutItem {
 private class TextSizeWithMinimum extends TextSize {
 	private var minimum:Int;
 	
-	private function new(baseSize:Int, minimum:Int) {
+	public function new(baseSize:Int, minimum:Int) {
 		super(baseSize);
 		
 		this.minimum = minimum;
