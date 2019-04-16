@@ -1,5 +1,10 @@
 package com.player03.layout;
 
+#if macro
+import haxe.macro.Context;
+import haxe.macro.Expr;
+import haxe.macro.Type;
+#else
 import flash.text.TextField;
 import com.player03.layout.item.Edge;
 import com.player03.layout.item.LayoutItem.LayoutMask;
@@ -9,8 +14,16 @@ import com.player03.layout.item.TextSize;
 import com.player03.layout.Resizable;
 
 /**
- * Use this class as a static extension. Then, without any further setup, you
- * can begin calling these functions as if they were instance methods. Sample:
+ * To use this as a static extension, you need to specify what you're using it for:
+ * 
+ * using layout.LayoutCreator.ForOpenFL; //compatible with DisplayObjects, but not Rectangles
+ * using layout.LayoutCreator.ForRectangles; //compatible with OpenFL's Rectangles
+ * using layout.LayoutCreator.ForHaxeUI; //compatible with HaxeUI's IDisplayObjects
+ * using layout.LayoutCreator.ForFlixel; //compatible with FlxSprites
+ * using layout.LayoutCreator.ForHaxePunk; //compatible with HaxePunk's entities
+ * 
+ * Once you've picked one or more of the above, without any further setup, you can
+ * call layout functions as if they were instance methods:
  * 
  * object0.simpleWidth(30);
  * object0.simpleHeight(40);
@@ -26,9 +39,16 @@ import com.player03.layout.Resizable;
  * Remember: set width and height before setting an object's position. Your
  * instructions will be run in order, and position often depends on dimensions.
  * 
+ * If you've already positioned your objects, try using the stickTo() functions
+ * to make them stay there and scale appropriately. Alternatively, try using
+ * preserve() if you want the class to guess which edge(s) each object should
+ * stick to.
+ * 
  * @author Joseph Cloutier
  */
-class LayoutCreator {
+@:build(com.player03.layout.LayoutCreator.LayoutCreatorBuilder.build())
+@:autoBuild(com.player03.layout.LayoutCreator.LayoutCreatorBuilder.build())
+class LayoutCreator<T> {
 	private static inline function check(layout:Layout):Layout {
 		if(layout == null) {
 			return Layout.currentLayout;
@@ -449,25 +469,6 @@ class LayoutCreator {
 		check(layout).add(objectToScale, Size.clampedRelativeHeight(percent, objectToScale.baseHeight));
 	}
 	
-	//Text size
-	//=========
-	
-	/**
-	 * Scales the text in the given text field. If no base size is
-	 * specified, the default text size will be used. If a minimum text
-	 * size is specified, the given value will be used.
-	 */
-	public static inline function simpleTextSize(textField:TextField, ?baseTextSize:Int, ?minimumTextSize:Int, ?layout:Layout):Void {
-		if(baseTextSize == null) {
-			baseTextSize = Std.int(textField.defaultTextFormat.size);
-		}
-		if(minimumTextSize == null) {
-			check(layout).add(textField, TextSize.simpleTextSize(baseTextSize));
-		} else {
-			check(layout).add(textField, TextSize.textSizeWithMinimum(baseTextSize, minimumTextSize));
-		}
-	}
-	
 	//Miscellaneous
 	//=============
 	
@@ -492,5 +493,305 @@ class LayoutCreator {
 		if(!height) {
 			layout.add(objectToScale, Size.maintainAspectRatio(false));
 		}
+	}
+	
+	//Position objects near an edge, and scale them normally
+	//======================================================
+	
+	public static inline function stickToLeft(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		layout = check(layout);
+		if(rigid) {
+			layout.add(object, Size.rigidSimpleWidth(object.baseWidth));
+			layout.add(object, Position.rigidInside(object.x, LEFT));
+		} else {
+			layout.add(object, Size.simpleWidth());
+			layout.add(object, Position.inside(object.x, LEFT));
+		}
+	}
+	public static inline function stickToRight(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		layout = check(layout);
+		if(rigid) {
+			layout.add(object, Size.rigidSimpleWidth(object.baseWidth));
+			layout.add(object, Position.rigidInside(layout.scale.baseWidth - object.right, RIGHT));
+		} else {
+			layout.add(object, Size.simpleWidth());
+			layout.add(object, Position.inside(layout.scale.baseWidth - object.right, RIGHT));
+		}
+	}
+	public static inline function stickToTop(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		layout = check(layout);
+		if(rigid) {
+			layout.add(object, Size.rigidSimpleHeight(object.baseHeight));
+			layout.add(object, Position.rigidInside(object.y, TOP));
+		} else {
+			layout.add(object, Size.simpleHeight());
+			layout.add(object, Position.inside(object.y, TOP));
+		}
+	}
+	public static inline function stickToBottom(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		layout = check(layout);
+		if(rigid) {
+			layout.add(object, Size.rigidSimpleHeight(object.baseHeight));
+			layout.add(object, Position.rigidInside(layout.scale.baseHeight - object.bottom, BOTTOM));
+		} else {
+			layout.add(object, Size.simpleHeight());
+			layout.add(object, Position.inside(layout.scale.baseHeight - object.bottom, BOTTOM));
+		}
+	}
+	public static inline function stickToCenterX(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		layout = check(layout);
+		if(rigid) {
+			layout.add(object, Size.rigidSimpleWidth(object.baseWidth));
+		} else {
+			layout.add(object, Size.simpleWidth());
+		}
+		layout.add(object, Position.offsetFromCenterX(object.x + object.baseWidth / 2 - layout.scale.baseWidth / 2));
+	}
+	public static inline function stickToCenterY(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		layout = check(layout);
+		if(rigid) {
+			layout.add(object, Size.rigidSimpleHeight(object.baseHeight));
+		} else {
+			layout.add(object, Size.simpleHeight());
+		}
+		layout.add(object, Position.offsetFromCenterY(object.y + object.baseHeight / 2 - layout.scale.baseHeight / 2));
+	}
+	
+	public static inline function stickToTopLeft(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		stickToLeft(object, rigid, layout);
+		stickToTop(object, rigid, layout);
+	}
+	public static inline function stickToTopRight(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		stickToRight(object, rigid, layout);
+		stickToTop(object, rigid, layout);
+	}
+	public static inline function stickToBottomLeft(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		stickToLeft(object, rigid, layout);
+		stickToBottom(object, rigid, layout);
+	}
+	public static inline function stickToBottomRight(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		stickToRight(object, rigid, layout);
+		stickToBottom(object, rigid, layout);
+	}
+	public static inline function stickToLeftCenter(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		stickToLeft(object, rigid, layout);
+		stickToCenterY(object, rigid, layout);
+	}
+	public static inline function stickToRightCenter(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		stickToRight(object, rigid, layout);
+		stickToCenterY(object, rigid, layout);
+	}
+	public static inline function stickToTopCenter(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		stickToCenterX(object, rigid, layout);
+		stickToTop(object, rigid, layout);
+	}
+	public static inline function stickToBottomCenter(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		stickToCenterX(object, rigid, layout);
+		stickToBottom(object, rigid, layout);
+	}
+	public static inline function stickToCenter(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		stickToCenterX(object, rigid, layout);
+		stickToCenterY(object, rigid, layout);
+	}
+	
+	//Stretch objects to fill the stage (minus any margins)
+	//=====================================================
+	
+	public static function stickToLeftAndRight(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		layout = check(layout);
+		if(rigid) {
+			layout.add(object, Size.clampedWidthMinus(layout.scale.baseWidth - object.width, object.baseWidth));
+			layout.add(object, Position.rigidInside(object.x, LEFT));
+		} else {
+			layout.add(object, Size.widthMinus(layout.scale.baseWidth - object.width));
+			layout.add(object, Position.inside(object.x, LEFT));
+		}
+	}
+	public static inline function stickToTopAndBottom(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		layout = check(layout);
+		if(rigid) {
+			layout.add(object, Size.clampedHeightMinus(layout.scale.baseHeight - object.height, object.baseHeight));
+			layout.add(object, Position.rigidInside(object.y, TOP));
+		} else {
+			layout.add(object, Size.heightMinus(layout.scale.baseHeight - object.height));
+			layout.add(object, Position.inside(object.y, TOP));
+		}
+	}
+	public static inline function stickToAllSides(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		stickToLeftAndRight(object, rigid, layout);
+		stickToTopAndBottom(object, rigid, layout);
+	}
+	
+	//Intelligent (?) positioning
+	//===========================
+	
+	/**
+	 * Guess which edges the object should stick to, or if it should stick to
+	 * the center, or if it should stretch to fill the stage.
+	 */
+	public static function preserve(object:Resizable, ?rigid:Bool = false, ?layout:Layout):Void {
+		layout = check(layout);
+		
+		if(object.baseWidth > layout.scale.baseWidth / 2) {
+			stickToLeftAndRight(object, rigid, layout);
+		} else {
+			var leftMargin:Float = object.left;
+			var rightMargin:Float = layout.scale.baseWidth - object.right;
+			var centerDifferenceX:Float = Math.abs(object.centerX - layout.scale.baseWidth / 2);
+			
+			if(centerDifferenceX < leftMargin && centerDifferenceX < rightMargin) {
+				stickToCenterX(object, rigid, layout);
+			} else if(leftMargin < rightMargin) {
+				stickToLeft(object, rigid, layout);
+			} else {
+				stickToRight(object, rigid, layout);
+			}
+		}
+		
+		if(object.baseHeight > layout.scale.baseHeight / 2) {
+			stickToTopAndBottom(object, rigid, layout);
+		} else {
+			var topMargin:Float = object.top;
+			var bottomMargin:Float = layout.scale.baseHeight - object.bottom;
+			var centerDifferenceY:Float = Math.abs(object.centerY - layout.scale.baseHeight / 2);
+			
+			if(centerDifferenceY < topMargin && centerDifferenceY < bottomMargin) {
+				stickToCenterY(object, rigid, layout);
+			} else if(topMargin < bottomMargin) {
+				stickToTop(object, rigid, layout);
+			} else {
+				stickToBottom(object, rigid, layout);
+			}
+		}
+	}
+	
+	/**
+	 * Guess how to scale all children of the given object.
+	 */
+	public static inline function preserveChildren(parent:DisplayObjectContainer, ?rigid:Bool = false, ?layout:Layout):Void {
+		for(i in 0...parent.numChildren) {
+			preserve(parent.getChildAt(i), rigid, layout);
+		}
+	}
+}
+
+class ForAreas extends LayoutCreator<com.player03.layout.area.Area> {
+}
+
+class ForRectangles extends LayoutCreator<flash.geom.Rectangle> {
+}
+
+class ForOpenFL extends LayoutCreator<flash.display.DisplayObject> {
+	/**
+	 * Scales the text in the given text field. If no base size is
+	 * specified, the default text size will be used. If a minimum text
+	 * size is specified, the given value will be used.
+	 */
+	public static inline function simpleTextSize(textField:TextField, ?baseTextSize:Int, ?minimumTextSize:Int, ?layout:Layout):Void {
+		if(baseTextSize == null) {
+			baseTextSize = Std.int(textField.defaultTextFormat.size);
+		}
+		if(minimumTextSize == null) {
+			LayoutCreator.check(layout).add(textField, TextSize.simpleTextSize(baseTextSize));
+		} else {
+			LayoutCreator.check(layout).add(textField, TextSize.textSizeWithMinimum(baseTextSize, minimumTextSize));
+		}
+	}
+}
+
+#if haxeui
+class ForHaxeUI extends LayoutCreator<haxe.ui.toolkit.core.interfaces.IDisplayObject> {
+}
+#end
+#if flixel
+class ForFlixel extends LayoutCreator<flixel.FlxSprite> {
+}
+#end
+#if haxepunk
+class ForHaxePunk extends LayoutCreator<haxepunk.Entity> {
+}
+#end
+#end
+
+@:noCompletion class LayoutCreatorBuilder {
+	#if macro
+	private static var layoutCreatorFields:Array<Field>;
+	#end
+	
+	public static macro function build():Array<Field> {
+		var fields:Array<Field> = Context.getBuildFields();
+		
+		var typeParam:ComplexType;
+		switch(Context.getLocalType()) {
+			case TInst(t, _):
+				if(t.get().name == "LayoutCreator") {
+					layoutCreatorFields = fields;
+					return fields;
+				}
+				
+				var params:Array<Type> = t.get().superClass.params;
+				if(params.length != 1) {
+					throw "Subclasses of LayoutCreator must specify one type parameter.";
+				}
+				
+				typeParam = Context.toComplexType(Context.follow(params[0]));
+			default:
+				throw "LayoutCreatorBuilder called on something other than a subclass of LayoutCreator.";
+		}
+		
+		//Hopefully the superclass will always be processed first, but if not, it's best not to
+		//throw an error. That way, the other macros can finish and the next attempt will work.
+		if(layoutCreatorFields == null) {
+			trace("Macros got executed in the wrong order. Please try again without restarting the language server.");
+			return fields;
+		}
+		
+		for(field in layoutCreatorFields) {
+			if(field.access.indexOf(APublic) < 0 || field.access.indexOf(AStatic) < 0
+				|| field.access.indexOf(AInline) < 0) {
+				continue;
+			}
+			
+			switch(field.kind) {
+				case FFun(f):
+					if(f.args.length < 2) {
+						continue;
+					}
+					
+					var args:Array<FunctionArg> = f.args.copy();
+					args[0] = {
+						name: args[0].name,
+						type: typeParam
+					};
+					
+					var callName:String = field.name;
+					var callArgs:Array<Expr> = [for(arg in args) @:pos(field.pos) macro $i{arg.name}];
+					
+					for(arg in callArgs) {
+						arg.pos = field.pos;
+					}
+					
+					var fun:Function = {
+						args: args,
+						expr: macro com.player03.layout.LayoutCreator.$callName($a{callArgs}),
+						ret: f.ret
+					};
+					fun.expr.pos = field.pos;
+					
+					fields.push({
+						name: field.name,
+						kind: FFun(fun),
+						access: [APublic, AStatic, AInline],
+						
+						//Deliberately including references to both field.pos and
+						//Context.currentPos() to make it more likely that both are
+						//displayed to the user.
+						pos: Context.currentPos()
+					});
+				default:
+			}
+		}
+		
+		return fields;
 	}
 }

@@ -22,4 +22,4 @@ package layout;
  * 
  * @author Joseph Cloutier
  */
-typedef LayoutPreserver = com.player03.layout.LayoutPreserver;
+typedef LayoutPreserver = com.player03.layout.LayoutCreator;
