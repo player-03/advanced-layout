@@ -2,26 +2,35 @@
 
 An easy way to create fluid layouts in Flash and OpenFL. There are two main ways to use it:
 
-1. Define your layout using convenience functions. (See [LayoutCreator](#using-layoutcreator).)
-2. Take a pre-built layout, and make it scale. (See [LayoutPreserver](#using-layoutpreserver).)
+1. [Define your layout using convenience functions](#creating-layouts).
+2. [Take a pre-built layout, and make it scale](#preserving-layouts).
 
 For a slower introduction to this library and the philosophy behind it, check out [my blog post](https://player03.com/2017/05/16/advanced-layout/).
 
 Installation
 ============
 
-```
+```text
 haxelib install advanced-layout
 ```
 
-Using LayoutCreator
-===================
+Setup
+-----
 
-To get started, add this after your imports:
+When enabling layouts for your project, you need to specify what type of objects you're working with. Add one or more of these lines after your import statements:
 
 ```haxe
-using layout.LayoutCreator;
+using layout.LayoutCreator.ForOpenFL; //compatible with DisplayObjects
+using layout.LayoutCreator.ForRectangles; //compatible with OpenFL's Rectangles
+using layout.LayoutCreator.ForHaxeUI; //compatible with HaxeUI's IDisplayObjects
+using layout.LayoutCreator.ForFlixel; //compatible with FlxSprites
+using layout.LayoutCreator.ForHaxePunk; //compatible with HaxePunk's entities
 ```
+
+Creating layouts
+================
+
+These functions will move your objects into place and keep them there. If you've already arranged everything, consider using the [alternate paradigm](#preserving-layouts).
 
 Scaling
 -------
@@ -56,7 +65,7 @@ myBitmap.maintainAspectRatio();
 Positioning
 -----------
 
-Always set the position after setting the scale.
+Always set the position after setting the scale. Most of these functions take the object's current width and height into account, so you want to make sure those values are up to date.
 
 ```haxe
 //Place the bitmap on the right edge of the stage.
@@ -132,16 +141,10 @@ myBitmap.above(mySprite);
 
 It's obviously more efficient not to call extra functions in the first place, but if for some reason you have to, it won't cause a memory leak.
 
-Using `LayoutPreserver`
-=====================
+Preserving layouts
+==================
 
-As the name implies, `LayoutPreserver` assumes that you've already arranged your layout. All this class does is make your layout scale with the stage.
-
-To get started, add this after your import statements:
-
-```haxe
-using layout.LayoutPreserver;
-```
+These functions assume that you've already arranged your layout. They take objects' positions into account and attempt to keep everything in place.
 
 Guessing
 --------
