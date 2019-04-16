@@ -4,8 +4,8 @@
 	"license": "MIT",
 	"tags": [],
 	"description": "An easy way to create fluid layouts.",
-	"version": "0.8.1",
-	"releasenote": "Various improvements.",
+	"version": "0.9.0",
+	"releasenote": "Haxe 4 compatibility.",
 	"contributors": [ "player_03" ],
 	"dependencies": {}
 }
