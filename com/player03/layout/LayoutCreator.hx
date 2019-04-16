@@ -6,6 +6,7 @@ import haxe.macro.Expr;
 import haxe.macro.Type;
 #else
 import flash.text.TextField;
+import flash.display.DisplayObjectContainer;
 import com.player03.layout.item.Edge;
 import com.player03.layout.item.LayoutItem.LayoutMask;
 import com.player03.layout.item.Position;
@@ -47,8 +48,7 @@ import com.player03.layout.Resizable;
  * @author Joseph Cloutier
  */
 @:build(com.player03.layout.LayoutCreator.LayoutCreatorBuilder.build())
-@:autoBuild(com.player03.layout.LayoutCreator.LayoutCreatorBuilder.build())
-class LayoutCreator<T> {
+class LayoutCreator {
 	private static inline function check(layout:Layout):Layout {
 		if(layout == null) {
 			return Layout.currentLayout;
@@ -664,24 +664,19 @@ class LayoutCreator<T> {
 			}
 		}
 	}
-	
-	/**
-	 * Guess how to scale all children of the given object.
-	 */
-	public static inline function preserveChildren(parent:DisplayObjectContainer, ?rigid:Bool = false, ?layout:Layout):Void {
-		for(i in 0...parent.numChildren) {
-			preserve(parent.getChildAt(i), rigid, layout);
-		}
-	}
 }
 
-class ForAreas extends LayoutCreator<com.player03.layout.area.Area> {
+@:autoBuild(com.player03.layout.LayoutCreator.LayoutCreatorBuilder.build())
+@:noCompletion class TypedLayoutCreator<T> extends LayoutCreator {
 }
 
-class ForRectangles extends LayoutCreator<flash.geom.Rectangle> {
+class ForAreas extends TypedLayoutCreator<com.player03.layout.area.Area> {
 }
 
-class ForOpenFL extends LayoutCreator<flash.display.DisplayObject> {
+class ForRectangles extends TypedLayoutCreator<flash.geom.Rectangle> {
+}
+
+class ForOpenFL extends TypedLayoutCreator<flash.display.DisplayObject> {
 	/**
 	 * Scales the text in the given text field. If no base size is
 	 * specified, the default text size will be used. If a minimum text
@@ -697,18 +692,27 @@ class ForOpenFL extends LayoutCreator<flash.display.DisplayObject> {
 			LayoutCreator.check(layout).add(textField, TextSize.textSizeWithMinimum(baseTextSize, minimumTextSize));
 		}
 	}
+	
+	/**
+	 * Guess how to scale all children of the given object.
+	 */
+	public static inline function preserveChildren(parent:DisplayObjectContainer, ?rigid:Bool = false, ?layout:Layout):Void {
+		for(i in 0...parent.numChildren) {
+			LayoutCreator.preserve(parent.getChildAt(i), rigid, layout);
+		}
+	}
 }
 
 #if haxeui
-class ForHaxeUI extends LayoutCreator<haxe.ui.toolkit.core.interfaces.IDisplayObject> {
+class ForHaxeUI extends TypedLayoutCreator<haxe.ui.toolkit.core.interfaces.IDisplayObject> {
 }
 #end
 #if flixel
-class ForFlixel extends LayoutCreator<flixel.FlxSprite> {
+class ForFlixel extends TypedLayoutCreator<flixel.FlxSprite> {
 }
 #end
 #if haxepunk
-class ForHaxePunk extends LayoutCreator<haxepunk.Entity> {
+class ForHaxePunk extends TypedLayoutCreator<haxepunk.Entity> {
 }
 #end
 #end
@@ -731,12 +735,12 @@ class ForHaxePunk extends LayoutCreator<haxepunk.Entity> {
 				
 				var params:Array<Type> = t.get().superClass.params;
 				if(params.length != 1) {
-					throw "Subclasses of LayoutCreator must specify one type parameter.";
+					throw "Subclasses of TypedLayoutCreator must specify one type parameter.";
 				}
 				
 				typeParam = Context.toComplexType(Context.follow(params[0]));
 			default:
-				throw "LayoutCreatorBuilder called on something other than a subclass of LayoutCreator.";
+				throw "LayoutCreatorBuilder called on something other than a subclass of TypedLayoutCreator.";
 		}
 		
 		//Hopefully the superclass will always be processed first, but if not, it's best not to
@@ -747,8 +751,7 @@ class ForHaxePunk extends LayoutCreator<haxepunk.Entity> {
 		}
 		
 		for(field in layoutCreatorFields) {
-			if(field.access.indexOf(APublic) < 0 || field.access.indexOf(AStatic) < 0
-				|| field.access.indexOf(AInline) < 0) {
+			if(field.access.indexOf(APublic) < 0 || field.access.indexOf(AStatic) < 0) {
 				continue;
 			}
 			
