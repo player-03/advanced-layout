@@ -213,35 +213,17 @@ private class DisplayObjectResizable extends ResizableImpl {
 	}
 	
 	private override function get_width():Float {
-		#if html5
-			return displayObject.scaleX * baseWidth;
-		#else
-			return displayObject.width;
-		#end
+		return displayObject.width;
 	}
 	private override function set_width(value:Float):Float {
-		#if html5
-			displayObject.scaleX = value / baseWidth;
-			return value;
-		#else
-			return displayObject.width = value;
-		#end
+		return displayObject.width = value;
 	}
 	
 	private override function get_height():Float {
-		#if html5
-			return displayObject.scaleY * baseHeight;
-		#else
-			return displayObject.height;
-		#end
+		return displayObject.height;
 	}
 	private override function set_height(value:Float):Float {
-		#if html5
-			displayObject.scaleY = value / baseHeight;
-			return value;
-		#else
-			return displayObject.height = value;
-		#end
+		return displayObject.height = value;
 	}
 	
 	private override function get_sourceObject():Dynamic {
