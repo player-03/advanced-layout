@@ -37,7 +37,7 @@ abstract Resizable(ResizableImpl) from ResizableImpl {
 	 * Useful for when you need something invisible to mark a position.
 	 */
 	public function new() {
-		return cast new RectangleResizable(new Rectangle(0, 0, 1, 1));
+		this = cast new RectangleResizable(new Rectangle(0, 0, 1, 1));
 	}
 	
 	@:from private static inline function fromDisplayObject(displayObject:DisplayObject):Resizable {
