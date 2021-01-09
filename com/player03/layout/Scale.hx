@@ -87,11 +87,7 @@ class Scale {
 	 */
 	private var behavior(null, set):ScaleBehavior;
 	private function set_behavior(value:ScaleBehavior):ScaleBehavior {
-		if(behavior == null && value != null) {
-			area.addEventListener(Event.CHANGE, onResize, false, 1);
-		} else if(behavior != null && value == null) {
-			area.removeEventListener(Event.CHANGE, onResize);
-			
+		if(behavior != null) {
 			x = 1;
 			y = 1;
 		}
@@ -159,13 +155,19 @@ class Scale {
 		}
 	#end
 	
-	private var area(default, set):Area;
+	public var area(default, set):Area;
 	private function set_area(value:Area):Area {
+		if(area != null) {
+			area.removeEventListener(Event.CHANGE, onResize);
+		}
+		
 		if(value == null) {
 			area = StageArea.instance;
 		} else {
 			area = value;
 		}
+		
+		area.addEventListener(Event.CHANGE, onResize, false, 1);
 		
 		if(behavior != null) {
 			onResize(null);
