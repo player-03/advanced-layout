@@ -6,8 +6,6 @@ import com.player03.layout.Resizable;
 import com.player03.layout.Scale;
 import flash.display.DisplayObject;
 
-using com.player03.layout.Direction.DirectionUtils;
-
 /**
  * The Edge class moves one of an object's edges at a time. This causes
  * it to modify an object's position AND size.

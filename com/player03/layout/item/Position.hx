@@ -6,8 +6,6 @@ import com.player03.layout.Resizable;
 import com.player03.layout.Scale;
 import flash.display.DisplayObject;
 
-using com.player03.layout.Direction.DirectionUtils;
-
 /**
  * Each Position value represents position along only one axis. You will
  * have to use two Position values if you want to fully specify an object's
