@@ -75,7 +75,7 @@ class Position implements LayoutItem {
 	}
 	
 	private var horizontal:Bool;
-	public var mask:Int;
+	public var mask:LayoutMask;
 	
 	public function new(horizontal:Bool) {
 		this.horizontal = horizontal;

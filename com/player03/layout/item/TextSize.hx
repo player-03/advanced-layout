@@ -25,7 +25,7 @@ class TextSize implements LayoutItem {
 	 * Scale.x rather than Scale.y, set this to true.
 	 */
 	public var horizontal:Bool = false;
-	public var mask:Int = LayoutMask.AFFECTS_TEXT_SIZE;
+	public var mask:LayoutMask = LayoutMask.AFFECTS_TEXT_SIZE;
 	private var baseSize:Int;
 	
 	private function new(baseSize:Int) {

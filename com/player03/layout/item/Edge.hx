@@ -46,7 +46,7 @@ class Edge implements LayoutItem {
 	
 	private var direction:Direction;
 	private var horizontal:Bool;
-	public var mask:Int;
+	public var mask:LayoutMask;
 	
 	public function new(direction:Direction) {
 		this.direction = direction;

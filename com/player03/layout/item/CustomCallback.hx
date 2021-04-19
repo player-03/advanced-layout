@@ -1,8 +1,10 @@
 package com.player03.layout.item;
 
+import com.player03.layout.item.LayoutItem.LayoutMask;
+
 class CustomCallback implements LayoutItem {
 	public var callback:Void -> Void;
-	public var mask:Int = 0;
+	public var mask:LayoutMask = 0;
 	
 	public function new(callback:Void -> Void) {
 		this.callback = callback;
