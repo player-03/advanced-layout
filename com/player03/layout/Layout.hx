@@ -194,6 +194,25 @@ class Layout {
 	}
 	
 	/**
+	 * Removes any references to the given object
+	 * that match the given mask.
+	 */
+	public function removeSpecific(target:Resizable, mask:LayoutMask):Void {
+		var i:Int = items.length - 1;
+		while(i >= 0) {
+			if(items[i].target != null
+					&& (items[i].target.equals(target) || items[i].area.equals(target))
+					&& LayoutMask.hasConflict(
+						items[i].item.mask,
+						mask)) {
+				items.splice(i, 1);
+			}
+			
+			i--;
+		}
+	}
+	
+	/**
 	 * Removes the given callback function.
 	 */
 	public inline function removeCallback(callback:Void -> Void):Void {
