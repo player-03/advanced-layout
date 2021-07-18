@@ -88,9 +88,9 @@ abstract Resizable(ResizableImpl) from ResizableImpl {
 	}
 	
 	public inline function castDisplayObject<T:DisplayObject>(type:Class<T>):T {
-		if(Std.is(this, DisplayObjectResizable)) {
+		if(Std.isOfType(this, DisplayObjectResizable)) {
 			var displayResizable:DisplayObjectResizable = cast this;
-			if(Std.is(displayResizable.displayObject, type)) {
+			if(Std.isOfType(displayResizable.displayObject, type)) {
 				return cast displayResizable.displayObject;
 			} else {
 				throw type + " required!";
