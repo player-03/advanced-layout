@@ -5,7 +5,6 @@ package layout;
  * 
  * using layout.LayoutCreator.ForOpenFL; //compatible with DisplayObjects, but not Rectangles
  * using layout.LayoutCreator.ForRectangles; //compatible with OpenFL's Rectangles
- * using layout.LayoutCreator.ForHaxeUI; //compatible with HaxeUI's IDisplayObjects
  * using layout.LayoutCreator.ForFlixel; //compatible with FlxSprites
  * using layout.LayoutCreator.ForHaxePunk; //compatible with HaxePunk's entities
  * 

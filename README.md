@@ -1,11 +1,11 @@
 # Advanced Layout
 
-An easy way to create fluid layouts in Flash and OpenFL. There are two main ways to use it:
+An easy way to create fluid layouts in OpenFL. There are two main ways to use it:
 
 1. [Define your layout using convenience functions](#creating-layouts).
 2. [Take a pre-built layout, and make it scale](#preserving-layouts).
 
-For a slower introduction to this library and the philosophy behind it, check out [my blog post](https://player03.com/2017/05/16/advanced-layout/).
+For a slower introduction to this library and the philosophy behind it, check out [my blog post](https://player03.com/openfl/advanced-layout/).
 
 Installation
 ============
@@ -22,7 +22,6 @@ When enabling layouts for your project, you need to specify what type of objects
 ```haxe
 using layout.LayoutCreator.ForOpenFL; //compatible with DisplayObjects
 using layout.LayoutCreator.ForRectangles; //compatible with OpenFL's Rectangles
-using layout.LayoutCreator.ForHaxeUI; //compatible with HaxeUI's IDisplayObjects
 using layout.LayoutCreator.ForFlixel; //compatible with FlxSprites
 using layout.LayoutCreator.ForHaxePunk; //compatible with HaxePunk's entities
 ```
@@ -144,18 +143,14 @@ It's obviously more efficient not to call extra functions in the first place, bu
 Preserving layouts
 ==================
 
-These functions assume that you've already arranged your layout. They take objects' positions into account and attempt to keep everything in place.
+Another approach is to arrange everything by hand inside a pre-defined "stage", and use that as a template. (Adobe Animate provides - or provided? - a WYSIWYG editor for this.) Advanced Layout has a few ways to take your pre-arranged layout and make it scale smoothly.
 
 Guessing
 --------
 
-As of release 0.6.0, `LayoutPreserver` can guess how an object should scale. To guess an individual object, use this:
+The `preserve()` function will look at an object's size and position, and guess how it should scale.
 
-```haxe
-myObject.preserve();
-```
-
-If you have a number of objects to scale, but they all have the same parent, you can call `preserveChildren()` to handle them all at once. Here is how you'd convert the code in OpenFL's SimpleSWFLayout example:
+If you have a lot of objects and are using OpenFL, `preserveChildren()` will recursively call `preserve()` on each one. This allows you to dramatically simplify OpenFL's "SimpleSWFLayout" sample project:
 
 ```haxe
 var clip:MovieClip = Assets.getMovieClip("layout:Layout");
@@ -164,10 +159,10 @@ addChild(clip);
 clip.preserveChildren();
 ```
 
-`LayoutPreserver` manual usage
-----------------------------
+Not guessing
+------------
 
-If guessing isn't good enough, you can specify how an object should act:
+If guessing isn't reliable enough, you can choose how to preserve an object's location:
 
 ```haxe
 //Make the object follow the right edge.
@@ -184,7 +179,68 @@ myObject.stickToLeftAndRight();
 
 These `stickTo()` functions always preserve whatever margin currently exists. If an object is five pixels from the right, and you call `stickToRight()`, the object will keep a five-pixel margin (except that the margin will scale slightly as the stage gets wider and narrower).
 
-This is how objects get pushed offscreen. If you call `stickToLeft()` for an object that's on the right, the margin will be enormous (most of the width of the stage). Then when the stage gets narrower, the margin will only get a little narrower, and the object will end up past the right edge.
+This is how objects get pushed offscreen. If you call `stickToLeft()` for an object that's on the right, the margin will be enormous (say, 600 pixels on an 800 pixel stage). If the stage gets narrower, the margin will stay at ~600, which could at that point be more than the entire width.
+
+You usually want to stick an object to the side it's closest to (which `preserve()` is good at), but there are exceptions.
+
+- If the object is part of a group, it's usually more important to stick it to the same place as the rest of the group. If you call the same `stickTo()` function for the whole group, all the pieces will move as if they're a single unit. `preserve()` is terrible at catching this.
+- If the object takes up most of the screen, you may want to stretch it to fill, or you might just want to center it. Depends on the type of object, and which ends up looking better. `preserve()` will err on the side of "stretch it."
+
+Some guessing
+-------------
+
+A middle road is also possible. You can use `preserve()` to make some quick guesses, then override what it gets wrong. For example:
+
+```haxe
+//Assume we have a `ui` object with a pre-defined layout.
+
+//Start by taking guesses as to how this layout should
+//scale, even though some guesses will be wrong.
+ui.preserveChildren();
+
+//Fortunately, the guesses are wrong in the same way
+//every time. Here are the mistakes:
+
+//The popup window gets stretched horizontally, when
+//it should be centered. The vertical axis is fine.
+ui.popupWindow.stickToCenterX();
+
+//The popup window's x button sticks to the top right
+//corner of the stage instead of the popup window.
+ui.xButton.stickToCenter();
+```
+
+Supporting other libraries
+==========================
+Even though it focuses on the OpenFL ecosystem, Advanced Layout's code is library-agnostic. It's possible to add support for any 2D display library, as long as that library lets you get and set `x`, `y`, `width`, and `height`. (Or the equivalents thereof.)
+
+To add support for a new library, you need:
+
+1. To be able to implicitly cast that library's objects to [`Resizable`](https://github.com/player-03/advanced-layout/blob/master/com/player03/layout/Resizable.hx#L29).
+   - This requires making a subclass of [`ResizableImpl`](https://github.com/player-03/advanced-layout/blob/master/com/player03/layout/Resizable.hx#L112).
+2. A subclass of `LayoutCreator`.
+
+There are a few ways to accomplish step 1, each with pros and cons. For this example, assume you're trying to add support for a type called `Sprite2D`.
+
+- If you were the one who created `Sprite2D`, you could extend `ResizableImpl` directly. This is kind of restrictive, though.
+- The easiest option is to modify [Resizable.hx](https://github.com/player-03/advanced-layout/blob/master/com/player03/layout/Resizable.hx) directly, adding a `fromSprite2D()` function similar to the existing `from` functions. But this will be undone when Advanced Layout gets updated. (Unless you submit a pull request!)
+- If `Sprite2D` is an abstract, you can add an implicit cast to `Resizable`, but that'll be undone when you update the other library.
+- The most realistic option is to make an abstract wrapping `Sprite2D`, which forwards all fields and implicitly casts to `Resizable`. For best results, write your code to refer exclusively to this abstract, not `Sprite2D`. It may not be convenient, but it'll work.
+
+Step 2 is simpler: create a subclass of `TypedLayoutCreator`.
+
+```haxe
+import com.player03.layout.LayoutCreator;
+
+class Sprite2DLayoutCreator extends TypedLayoutCreator<AbstractSprite2D> {
+}
+```
+
+You don't need to write any functions in this class; a macro will handle that. Just type `using package.Sprite2DLayoutCreator` and start laying out your `AbstractSprite2D`s.
+
+The reason you have to declare all variables as `AbstractSprite2D` instead of just `Sprite2D` is, the `using` directive only works on an exact type match. So you can only write `sprite.alignRight(20)` if `sprite` matches the type parameter you wrote when extending `TypedLayoutCreator`. (And that type parameter must convert directly to `Resizable`. Haxe can't handle `Sprite2D` -> `AbstractSprite2D` -> `Resizable`; that's one step too many.)
+
+If you want to act on a `Sprite2D` value, you either need to cast it to `AbstractSprite2D` or skip the `using` directive and type out `Sprite2DLayoutCreator.alignRight(sprite, 20)`.
 
 Cleaning up
 ===========
