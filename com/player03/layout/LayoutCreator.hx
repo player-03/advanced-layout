@@ -4,6 +4,8 @@ package com.player03.layout;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.Type;
+
+using haxe.macro.ComplexTypeTools;
 #else
 import flash.text.TextField;
 import flash.display.DisplayObjectContainer;
@@ -46,7 +48,7 @@ import com.player03.layout.Resizable;
  * 
  * @author Joseph Cloutier
  */
-@:build(com.player03.layout.LayoutCreator.LayoutCreatorBuilder.build())
+@:build(com.player03.layout.LayoutCreator.LayoutCreatorBuilder.recordFields())
 class LayoutCreator {
 	private static inline function check(layout:Layout):Layout {
 		if(layout == null) {
@@ -665,6 +667,9 @@ class LayoutCreator {
 	}
 }
 
+//This macro copies the functions from `LayoutCreator` into direct
+//subclasses of `TypedLayoutCreator`, modifying the functions to
+//accept the given type.
 @:autoBuild(com.player03.layout.LayoutCreator.LayoutCreatorBuilder.build())
 @:noCompletion class TypedLayoutCreator<T> extends LayoutCreator {
 }
@@ -721,32 +726,65 @@ class ForHaxePunk extends TypedLayoutCreator<haxepunk.Entity> {
 	private static var layoutCreatorFields:Array<Field>;
 	#end
 	
+	@:allow(com.player03.layout.LayoutCreator)
+	private static macro function recordFields():Array<Field> {
+		layoutCreatorFields = Context.getBuildFields();
+		return layoutCreatorFields;
+	}
+	
 	public static macro function build():Array<Field> {
 		var fields:Array<Field> = Context.getBuildFields();
 		
-		var typeParam:ComplexType;
-		switch(Context.getLocalType()) {
-			case TInst(t, _):
-				if(t.get().name == "LayoutCreator") {
-					layoutCreatorFields = fields;
-					return fields;
-				}
-				
-				var params:Array<Type> = t.get().superClass.params;
-				if(params.length != 1) {
-					throw "Subclasses of TypedLayoutCreator must specify one type parameter.";
-				}
-				
-				typeParam = Context.toComplexType(Context.follow(params[0]));
-			default:
-				throw "LayoutCreatorBuilder called on something other than a subclass of TypedLayoutCreator.";
+		var localClass:ClassType = Context.getLocalClass().get();
+		if(localClass.superClass.t.get().name != "TypedLayoutCreator") {
+			return fields;
 		}
+		
+		var params:Array<Type> = localClass.superClass.params;
+		if(params.length != 1) {
+			Context.error("Subclasses of TypedLayoutCreator must specify exactly one type parameter.", localClass.pos);
+		}
+		
+		var inputType:ComplexType = Context.toComplexType(Context.follow(params[0]));
 		
 		//Hopefully the superclass will always be processed first, but if not, it's best not to
 		//throw an error. That way, the other macros can finish and the next attempt will work.
 		if(layoutCreatorFields == null) {
-			trace("Macros got executed in the wrong order. Please try again without restarting the language server.");
+			Context.warning("Macros got executed in the wrong order. Please try again without restarting the language server.", Context.currentPos());
 			return fields;
+		}
+		
+		var hasToResizableFunction:Bool = false;
+		for(field in fields) {
+			if(field.name == "toResizable") {
+				switch(field.kind) {
+					case FFun({ args: [arg], ret: TPath({ name: "Resizable" }) }):
+						arg.type = inputType;
+						hasToResizableFunction = true;
+					default:
+						Context.warning("toResizable() should take one argument and return Resizable.", field.pos);
+				}
+				
+				if(field.access == null || field.access.indexOf(AStatic) < 0) {
+					if(field.access == null) {
+						field.access = [];
+					}
+					
+					field.access.push(AStatic);
+					
+					var staticMessage:String = "toResizable() must be static.";
+					if(field.access.indexOf(AInline) < 0) {
+						Context.info(staticMessage + " Consider inlining it as well, for performance.", field.pos);
+					} else {
+						Context.info(staticMessage, field.pos);
+					}
+				}
+				
+				break;
+			}
+		}
+		if(!hasToResizableFunction && !Context.unify(inputType.toType(), (macro:com.player03.layout.Resizable).toType())) {
+			Context.error("Can't unify " + (new haxe.macro.Printer().printComplexType(inputType)) + " with Resizable. To get around this, define a toResizable() function that explicitly converts.", localClass.pos);
 		}
 		
 		for(field in layoutCreatorFields) {
@@ -763,32 +801,26 @@ class ForHaxePunk extends TypedLayoutCreator<haxepunk.Entity> {
 					var args:Array<FunctionArg> = f.args.copy();
 					args[0] = {
 						name: args[0].name,
-						type: typeParam
+						type: inputType
 					};
 					
 					var callName:String = field.name;
 					var callArgs:Array<Expr> = [for(arg in args) @:pos(field.pos) macro $i{arg.name}];
-					
-					for(arg in callArgs) {
-						arg.pos = field.pos;
+					if(hasToResizableFunction) {
+						callArgs[0] = @:pos(field.pos) macro toResizable(${callArgs[0]});
 					}
 					
 					var fun:Function = {
 						args: args,
-						expr: macro com.player03.layout.LayoutCreator.$callName($a{callArgs}),
+						expr: @:pos(field.pos) macro com.player03.layout.LayoutCreator.$callName($a{callArgs}),
 						ret: f.ret
 					};
-					fun.expr.pos = field.pos;
 					
 					fields.push({
 						name: field.name,
 						kind: FFun(fun),
 						access: [APublic, AStatic, AInline],
-						
-						//Deliberately including references to both field.pos and
-						//Context.currentPos() to make it more likely that both are
-						//displayed to the user.
-						pos: Context.currentPos()
+						pos: field.pos
 					});
 				default:
 			}

@@ -217,30 +217,31 @@ Even though it focuses on the OpenFL ecosystem, Advanced Layout's code is librar
 To add support for a new library, you need:
 
 1. To be able to implicitly cast that library's objects to [`Resizable`](https://github.com/player-03/advanced-layout/blob/master/com/player03/layout/Resizable.hx#L29).
-   - This requires making a subclass of [`ResizableImpl`](https://github.com/player-03/advanced-layout/blob/master/com/player03/layout/Resizable.hx#L112).
+   - This will require a subclass of [`ResizableImpl`](https://github.com/player-03/advanced-layout/blob/master/com/player03/layout/Resizable.hx#L112).
 2. A subclass of `LayoutCreator`.
 
-There are a few ways to accomplish step 1, each with pros and cons. For this example, assume you're trying to add support for a type called `Sprite2D`.
+There are a two main routes you can take. For both examples, assume you're trying to add support for a type called `Sprite2D`.
 
-- If you were the one who created `Sprite2D`, you could extend `ResizableImpl` directly. This is kind of restrictive, though.
-- The easiest option is to modify [Resizable.hx](https://github.com/player-03/advanced-layout/blob/master/com/player03/layout/Resizable.hx) directly, adding a `fromSprite2D()` function similar to the existing `from` functions. But this will be undone when Advanced Layout gets updated. (Unless you submit a pull request!)
-- If `Sprite2D` is an abstract, you can add an implicit cast to `Resizable`, but that'll be undone when you update the other library.
-- The most realistic option is to make an abstract wrapping `Sprite2D`, which forwards all fields and implicitly casts to `Resizable`. For best results, write your code to refer exclusively to this abstract, not `Sprite2D`. It may not be convenient, but it'll work.
-
-Step 2 is simpler: create a subclass of `TypedLayoutCreator`.
-
-```haxe
-import com.player03.layout.LayoutCreator;
-
-class Sprite2DLayoutCreator extends TypedLayoutCreator<AbstractSprite2D> {
-}
-```
-
-You don't need to write any functions in this class; a macro will handle that. Just type `using package.Sprite2DLayoutCreator` and start laying out your `AbstractSprite2D`s.
-
-The reason you have to declare all variables as `AbstractSprite2D` instead of just `Sprite2D` is, the `using` directive only works on an exact type match. So you can only write `sprite.alignRight(20)` if `sprite` matches the type parameter you wrote when extending `TypedLayoutCreator`. (And that type parameter must convert directly to `Resizable`. Haxe can't handle `Sprite2D` -> `AbstractSprite2D` -> `Resizable`; that's one step too many.)
-
-If you want to act on a `Sprite2D` value, you either need to cast it to `AbstractSprite2D` or skip the `using` directive and type out `Sprite2DLayoutCreator.alignRight(sprite, 20)`.
+1. If you're using a well-known library, make changes directly to Advanced Layout, and submit them as a pull request.
+   1. Modify [Resizable.hx](https://github.com/player-03/advanced-layout/blob/master/com/player03/layout/Resizable.hx) directly, adding a `fromSprite2D` function and a `Sprite2DResizable` class. Follow the examples given and it should work.
+   2. Add a `ForSprite2D` class to LayoutCreator.hx, again following the examples given.
+   3. Type `using com.player03.LayoutCreator.ForSprite2D;` and you're good to go!
+2. If you don't plan to submit your changes, it's best not to modify Advanced Layout at all, or you might lose your work after an update. Instead, you want to create 
+   1. Create a `Sprite2DResizable` class, again following the examples given in Resizable.hx.
+   2. Create a subclass of `TypedLayoutCreator`, and include a function to convert to `Resizable`.
+   
+   ```haxe
+   import com.player03.layout.LayoutCreator;
+   import com.player03.layout.Resizable;
+   
+   class Sprite2DLayoutCreator extends TypedLayoutCreator<Sprite2D> {
+       private static inline function toResizable(sprite:Sprite2D):Resizable {
+           return new Sprite2DResizable(sprite);
+       }
+   }
+   ```
+   
+   3. Type `using your.package.Sprite2DLayoutCreator;` and you're good to go!
 
 Cleaning up
 ===========
