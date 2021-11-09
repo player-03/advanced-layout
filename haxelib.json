@@ -4,8 +4,8 @@
 	"license": "MIT",
 	"tags": [],
 	"description": "An easy way to create fluid layouts.",
-	"version": "0.10.0",
-	"releasenote": "Fixes various bugs and improves abstracts, but no longer supports Haxe 3.",
+	"version": "0.11.0",
+	"releasenote": "Improved documentation and extensibility.",
 	"contributors": [ "player_03" ],
 	"dependencies": {}
 }
